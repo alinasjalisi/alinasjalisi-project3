@@ -1,3 +1,43 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+public class GameGUI extends JFrame{
+    //private methods to everythings we are creating]
+    private JTextField playerName;
+    private JTextField IP_Address;
+    private JTextField PortNum;
+    private JButton Connect_Disconnect;
+
+    private JButton New_Game;
+
+    private JButton Click1A;
+    private JButton Click2A;
+    private JButton Click3A;
+    private JButton Click1B;
+    private JButton Click2B;
+    private JButton Click3B;
+    private JButton Click1C;
+    private JButton Click2C;
+    private JButton Click3C;
+
+    //used to connect GameClient
+    private GameClient newPlayer;
+
+    public GameGUI(){
+
+        super("TicTacToe");
+
+        //used to start the GUI 
+
+    }
+
+    private void startGameGUI(){
+
+    }
+}
 //GUI for the game
 
 
