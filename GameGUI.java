@@ -22,7 +22,7 @@ public class GameGUI extends JFrame{
     private JButton Click1C;
     private JButton Click2C;
     private JButton Click3C;
-
+   
     //used to connect GameClient
     private GameClient newPlayer;
 
