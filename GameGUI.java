@@ -32,7 +32,6 @@ public class GameGUI extends JFrame
         startGameGUI();
     }
 
-
     private void startGameGUI()
     {
         setTitle("TicTacToe(connected)");
@@ -174,7 +173,6 @@ private JPanel createTop(){
         //setting the top panel with name, ip, port, and connect
         JPanel topPanel = new JPanel(new FlowLayout());
 
-
         PlaySymbol = new JTextField(7);
         topPanel.add(new JLabel("Player: "));
         topPanel.add(PlaySymbol);
@@ -242,7 +240,6 @@ private JPanel createTop(){
     }
 
 
-
     public static void main(String[] args) 
     {
         SwingUtilities.invokeLater(() -> {
@@ -252,7 +249,6 @@ private JPanel createTop(){
     }
 }
 //GUI for the game
-
 
 //pseudo code for GUI - done by gabby 
 /*
@@ -279,7 +275,6 @@ private JPanel createTop(){
  * 
  */
 
-
 /*add for fucntion and stuff - Sere
 button for x and o
 //create an instance of Gamelient
@@ -296,5 +291,6 @@ button for x and o
 //playerTurn: method to display when it a certain person turn
 
 
-
 */ 
+
+
