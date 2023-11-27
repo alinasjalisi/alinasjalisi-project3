@@ -31,7 +31,24 @@ public class GameGUI extends JFrame
     public GameGUI()
     {
 
+
         super("TicTacToe");
+
+        
+
+        //used to connect with the server methods
+        startGameGUI();
+    }
+
+
+    private void startGameGUI()
+    {
+        setTitle("TicTacToe(connected)");
+        setSize(900, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+                
+    
 
         //setting the top panel with name, ip, port, and connect
         JPanel topPanel = new JPanel(new FlowLayout());
@@ -59,12 +76,89 @@ public class GameGUI extends JFrame
         //needs to be at the bottom of JFrame
         bottomPanel.add(HowTo);
 
-        //used to connect with the server methods
-        startGameGUI();
+        // alina - not sure if this works but i tried lol: 
+    // Create a panel for the status and TicTacToe board
+    private JPanel createMiddlePanel() {
+    JPanel middlePanel = new JPanel(new GridLayout(2, 1));
+
+    // Create a panel for the TicTacToe board
+    JPanel boardPanel = new JPanel(new GridLayout(3, 3));
+
+    // Create nine JButtons for the TicTacToe board cells
+    JButton[][] boardButtons = new JButton[3][3];
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            boardButtons[i][j] = new JButton();
+            boardButtons[i][j].addActionListener(new BoardButtonActionListener(i, j));
+            boardPanel.add(boardButtons[i][j]);
+        }
     }
 
-    private void startGameGUI()
-    {
+    // Create a JTextArea to display the status
+    JTextArea statusTextArea = new JTextArea();
+    statusTextArea.setEditable(false);
+    statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 24));
+    statusTextArea.setText("Player X's turn");
+
+    // Add the board panel and status text area to the middle panel
+    middlePanel.add(boardPanel);
+    middlePanel.add(statusTextArea);
+
+    return middlePanel;
+}
+
+    private JPanel createRightPanel() {
+    JPanel rightPanel = new JPanel(new GridLayout(4, 1));
+
+    // Create a JLabel for the "Options" section
+    JLabel optionsLabel = new JLabel("Options");
+    rightPanel.add(optionsLabel);
+
+    // Create a JButton to start a new game
+    JButton newGameButton = new JButton("New Game");
+    newGameButton.addActionListener(new NewGameButtonActionListener());
+    rightPanel.add(newGameButton);
+
+    // Create a JButton to quit the current game
+    JButton quitGameButton = new JButton("Quit Game");
+    quitGameButton.addActionListener(new QuitGameButtonActionListener());
+    rightPanel.add(quitGameButton);
+
+    // Create a JLabel for the "Your symbol is" section
+    JLabel yourSymbolLabel = new JLabel("Your symbol is:");
+    rightPanel.add(yourSymbolLabel);
+
+    // Create a JTextArea to display the user's symbol
+    JTextArea userSymbolTextArea = new JTextArea();
+    userSymbolTextArea.setEditable(false);
+    // Need to call a method from a different class to get the user's symbol
+    userSymbolTextArea.setText("X");
+    //maybe an if statement changing it to userSymbolTextArea.setText("O"); if the method that sets user symbols already assigned player 1 X
+
+
+
+    // Add the user symbol text area to the right panel
+    rightPanel.add(userSymbolTextArea);
+
+    return rightPanel;
+}
+
+// Create a panel to display the last move
+private JPanel createLeftPanel() {
+    JPanel leftPanel = new JPanel(new FlowLayout());
+
+    // Create a JTextArea to display the last move message
+    JTextArea lastMoveTextArea = new JTextArea();
+    lastMoveTextArea.setEditable(false);
+    // Need to call a method from the LastMove class to get the last move message
+    lastMoveTextArea.setText("Player X made the last move at A1");
+    //^^need to fix cuz it should be calling on lastmove.java class to update the text here ^^
+
+    // Add the last move text area to the left panel
+    leftPanel.add(lastMoveTextArea);
+
+    return leftPanel;
+}
 
     }
 
@@ -72,8 +166,6 @@ public class GameGUI extends JFrame
     {
         // create an instance of EnigmaFrame and calls it to run
         GameGUI gameGUI = new GameGUI();
-        gameGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        gameGUI.setSize(900, 600);
         gameGUI.setVisible(true);
     }
 }
@@ -93,6 +185,11 @@ public class GameGUI extends JFrame
  * option button QUIT to end game
  * 
  * bottomPanel - JTextfield with instructions
+ * top panel for ip port
+ * 3 more pannels
+ * 1. middle for status and tictactoe board - main pannel
+ * 2. right - options and your symbol
+ * 3. left - last position 
  * 
  * display Player's symbol in bottom right corner
  * 

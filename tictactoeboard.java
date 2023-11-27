@@ -39,6 +39,8 @@ public class tictactoeboard {
             //if all of them are false, then isWinner returns false (as perscribed in the 3 methods below)
         return (checkRows(symbol) || checkColumns(symbol) || checkDiagonals(symbol));
         //****** should we have a statement here declaring witch symbol is a winner? or will that be in GUI/client
+        // call stateWin method from gameGUI that prompts game to call a pop up message that displays which user x or o won
+        
     }
 
     // Check if the symbol has won in any row
