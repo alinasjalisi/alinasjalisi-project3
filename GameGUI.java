@@ -4,11 +4,13 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-public class GameGUI extends JFrame{
-    //private methods to everythings we are creating]
-    private JTextField playerName;
+public class GameGUI extends JFrame
+{
+    //private methods to everythings we are creating
+    //top buttons used to connect to the server
     private JTextField IP_Address;
     private JTextField PortNum;
+    private JTextField HowTo; //instructions for game
     private JButton Connect_Disconnect;
 
     private JButton New_Game;
@@ -26,16 +28,53 @@ public class GameGUI extends JFrame{
     //used to connect GameClient
     private GameClient newPlayer;
 
-    public GameGUI(){
+    public GameGUI()
+    {
 
         super("TicTacToe");
 
-        //used to start the GUI 
+        //setting the top panel with name, ip, port, and connect
+        JPanel topPanel = new JPanel(new FlowLayout());
+        
+        // displays IP Address
+        IP_Address = new JTextField(7);
+        topPanel.add(new JLabel("IP Address "));
+        IP_Address.setText("");
+        topPanel.add(IP_Address);
+        
+        //displays the port used
+        PortNum = new JTextField(5);
+        topPanel.add(new JLabel("Port "));
+        PortNum.setText("");
+        topPanel.add(PortNum);
+        add(topPanel); 
+
+        // creates the connect button
+        Connect_Disconnect = new JButton("Connect");
+        topPanel.add(Connect_Disconnect);
+
+        //adding instructions how to play the game at the bottom
+        JPanel bottomPanel = new JPanel();
+        HowTo = new JTextField(20);
+        //needs to be at the bottom of JFrame
+        bottomPanel.add(HowTo);
+
+        //used to connect with the server methods
+        startGameGUI();
+    }
+
+    private void startGameGUI()
+    {
 
     }
 
-    private void startGameGUI(){
-
+    public static void main(String[] args) 
+    {
+        // create an instance of EnigmaFrame and calls it to run
+        GameGUI gameGUI = new GameGUI();
+        gameGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameGUI.setSize(900, 600);
+        gameGUI.setVisible(true);
     }
 }
 //GUI for the game
