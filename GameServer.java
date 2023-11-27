@@ -1,5 +1,5 @@
 import java.io.*;
-import java.net.ServerSocket;
+/*import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class GameServer{
     //allow to take in the specific port
     public GameServer(int serverport){
         //craete new server
-        try{
+       /* try{
             serverSock = new ServerSocket(serverport);
             upcomingPlayer = new ArrayList<>();
             upcomingMove = new ArrayList<>();
@@ -201,3 +201,4 @@ public static void main(String args[]) {
 //checkWin to ckeck for win conditions using the tictac toeboard methos
 //checkDraw to ckeck for possible draw
 
+*/

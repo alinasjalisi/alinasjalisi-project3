@@ -8,34 +8,26 @@ public class GameGUI extends JFrame
 {
     //private methods to everythings we are creating
     //top buttons used to connect to the server
+    private JTextField PlaySymbol;
     private JTextField IP_Address;
     private JTextField PortNum;
-    private JTextField HowTo; //instructions for game
+    private JTextArea HowTo; //instructions for game
     private JButton Connect_Disconnect;
-
+    //text for has the last move
+    private JTextArea LastMOVE;
     private JButton New_Game;
-
-    private JButton Click1A;
-    private JButton Click2A;
-    private JButton Click3A;
-    private JButton Click1B;
-    private JButton Click2B;
-    private JButton Click3B;
-    private JButton Click1C;
-    private JButton Click2C;
-    private JButton Click3C;
-   
     //used to connect GameClient
-    private GameClient newPlayer;
+    //private GameClient newPlayer;
+
+    private JLabel optionsLabel;
+    private JButton newGameButton;
+    private JButton quitGameButton;
+    private JLabel yourSymbolLabel;
+    private JTextArea userSymbolTextArea;
 
     public GameGUI()
     {
-
-
         super("TicTacToe");
-
-        
-
         //used to connect with the server methods
         startGameGUI();
     }
@@ -47,126 +39,216 @@ public class GameGUI extends JFrame
         setSize(900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-                
-        //setting the top panel with name, ip, port, and connect
-        JPanel topPanel = new JPanel(new FlowLayout());
+
+        // Store properties for the top panel
+        JPanel TFrame = new JPanel(new GridBagLayout());
+        GridBagConstraints top_settings = new GridBagConstraints();
+
+        JPanel Top_part = createTop();
+        top_settings.gridx = 0;
+        top_settings.gridy = 0;
+        top_settings.weightx = 1.0;
+        top_settings.fill = GridBagConstraints.HORIZONTAL;
+        TFrame.add(Top_part, top_settings);
         
-        // displays IP Address
-        IP_Address = new JTextField(7);
-        topPanel.add(new JLabel("IP Address "));
-        //IP_Address.setText(""); don't think we need
-        topPanel.add(IP_Address);
         
-        //displays the port used
-        PortNum = new JTextField(5);
-        topPanel.add(new JLabel("Port "));
-        //PortNum.setText(""); don't need this
-        topPanel.add(PortNum);
-        //add(topPanel);  don't think we need
+        JPanel LFrame = new JPanel(new GridBagLayout());
+        GridBagConstraints left_settings = new GridBagConstraints();
 
-        // creates the connect button
-        Connect_Disconnect = new JButton("Connect");
-        Connect_Disconnect.addActionListener(new connectAction());
-        topPanel.add(Connect_Disconnect);
-        add(topPanel, BorderLayout.NORTH);
+        JPanel Left_part = createLeftPanel();
+        left_settings.gridx = 0;
+        left_settings.gridy = 0;
+        left_settings.weightx = 0.2;
+        left_settings.fill = GridBagConstraints.BOTH;
+        LFrame.add(Left_part, left_settings);
 
-        //adding instructions how to play the game at the bottom
-        JPanel bottomPanel = new JPanel();
-        HowTo = new JTextField(20);
-        //needs to be at the bottom of JFrame
-        bottomPanel.add(HowTo);
+        //store properties for the Middle section
+        JPanel MFrame = new JPanel(new GridBagLayout());
+        GridBagConstraints middle_settings = new GridBagConstraints();
 
-        // alina - not sure if this works but i tried lol: 
-    // Create a panel for the status and TicTacToe board
-    private JPanel createMiddlePanel() {
-    JPanel middlePanel = new JPanel(new GridLayout(2, 1));
+        JPanel middle_part = createMiddlePanel();
+        middle_settings.gridx = 0;
+        middle_settings.gridy = 1;
+        middle_settings.weightx = 1.0;
+        middle_settings.weighty = 1.0;
+        middle_settings.fill = GridBagConstraints.BOTH;
+        MFrame.add(middle_part, middle_settings);
 
-    // Create a panel for the TicTacToe board
-    JPanel boardPanel = new JPanel(new GridLayout(3, 3));
+        // Store properties for the right section
+        JPanel RFrame = new JPanel(new GridBagLayout());
+        GridBagConstraints right_settings = new GridBagConstraints();
 
-    // Create nine JButtons for the TicTacToe board cells
-    JButton[][] boardButtons = new JButton[3][3];
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            boardButtons[i][j] = new JButton();
-            boardButtons[i][j].addActionListener(new BoardButtonActionListener(i, j));
-            boardPanel.add(boardButtons[i][j]);
-        }
-    }
+        JPanel right_part = createRightPanel();
+        right_settings.gridx = 1;
+        right_settings.gridy = 1;
+        right_settings.weightx = 0.2; // Adjust this value as needed
+        right_settings.weighty = 1.0;
+        right_settings.fill = GridBagConstraints.BOTH;
+        RFrame.add(right_part, right_settings);
 
-    // Create a JTextArea to display the status
-    JTextArea statusTextArea = new JTextArea();
-    statusTextArea.setEditable(false);
-    statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 24));
-    statusTextArea.setText("Player X's turn");
+        // Store properties for the bottom section
+        JPanel BFrame = new JPanel(new GridBagLayout());
+        GridBagConstraints bottom_settings = new GridBagConstraints();
 
-    // Add the board panel and status text area to the middle panel
-    middlePanel.add(boardPanel);
-    middlePanel.add(statusTextArea);
+        JPanel bottom_part = createBottomPanel();
+        bottom_settings.gridx = 0;
+        bottom_settings.gridy = 2;
+        bottom_settings.gridwidth = 2;
+        bottom_settings.weightx = 1.0;
+        bottom_settings.fill = GridBagConstraints.HORIZONTAL;
+        BFrame.add(bottom_part, bottom_settings);
 
-    return middlePanel;
-}
+       // Add components to the main frame
+       add(TFrame, BorderLayout.NORTH);
+       add(LFrame, BorderLayout.WEST);
+       add(MFrame, BorderLayout.CENTER);
+       add(RFrame, BorderLayout.EAST);
+       add(BFrame, BorderLayout.SOUTH);
+   }
 
-    private JPanel createRightPanel() {
+private JPanel createRightPanel() {
     JPanel rightPanel = new JPanel(new GridLayout(4, 1));
 
     // Create a JLabel for the "Options" section
-    JLabel optionsLabel = new JLabel("Options");
-    rightPanel.add(optionsLabel);
+    optionsLabel = new JLabel("Options:");
+    optionsLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+    rightPanel.add(optionsLabel, BorderLayout.NORTH);
+
+    // Create a JPanel for buttons and labels
+    JPanel optionsButtonsPanel = new JPanel(new GridLayout(3, 1));
 
     // Create a JButton to start a new game
-    JButton newGameButton = new JButton("New Game");
-    newGameButton.addActionListener(new NewGameButtonActionListener());
-    rightPanel.add(newGameButton);
+    newGameButton = new JButton("New Game");
+    newGameButton.setPreferredSize(new Dimension(100, 20));
+    //newGameButton.addActionListener(new NewGameButtonActionListener());
+    optionsButtonsPanel.add(newGameButton);
 
     // Create a JButton to quit the current game
-    JButton quitGameButton = new JButton("Quit Game");
-    quitGameButton.addActionListener(new QuitGameButtonActionListener());
-    rightPanel.add(quitGameButton);
+    quitGameButton = new JButton("Quit Game");
+    quitGameButton.setPreferredSize(new Dimension(100, 20));
+    //quitGameButton.addActionListener(new QuitGameButtonActionListener());
+    optionsButtonsPanel.add(quitGameButton);
 
     // Create a JLabel for the "Your symbol is" section
-    JLabel yourSymbolLabel = new JLabel("Your symbol is:");
-    rightPanel.add(yourSymbolLabel);
+    yourSymbolLabel = new JLabel("Your symbol is:");
+    yourSymbolLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+    optionsButtonsPanel.add(yourSymbolLabel);
+
+    // Add the options buttons panel to the right panel
+    rightPanel.add(optionsButtonsPanel, BorderLayout.CENTER);
 
     // Create a JTextArea to display the user's symbol
-    JTextArea userSymbolTextArea = new JTextArea();
+    userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
     // Need to call a method from a different class to get the user's symbol
     userSymbolTextArea.setText("X");
-    //maybe an if statement changing it to userSymbolTextArea.setText("O"); if the method that sets user symbols already assigned player 1 X
-
-
+    userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 80)));
+    // Maybe an if statement changing it to userSymbolTextArea.setText("O");
+    // if the method that sets user symbols already assigned player 1 X
 
     // Add the user symbol text area to the right panel
-    rightPanel.add(userSymbolTextArea);
+    rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
 
     return rightPanel;
 }
 
 // Create a panel to display the last move
 private JPanel createLeftPanel() {
-    JPanel leftPanel = new JPanel(new FlowLayout());
+    JPanel leftPanel = new JPanel(new BorderLayout());
+
+    // Add a label for the "Last Move" section
+    JLabel lastMoveLabel = new JLabel("Last Move: ");
+    leftPanel.add(lastMoveLabel, BorderLayout.NORTH);
 
     // Create a JTextArea to display the last move message
-    JTextArea lastMoveTextArea = new JTextArea();
-    lastMoveTextArea.setEditable(false);
-    // Need to call a method from the LastMove class to get the last move message
-    lastMoveTextArea.setText("Player X made the last move at A1");
-    //^^need to fix cuz it should be calling on lastmove.java class to update the text here ^^
-
-    // Add the last move text area to the left panel
-    leftPanel.add(lastMoveTextArea);
+    LastMOVE = new JTextArea();
+    LastMOVE.setEditable(false);
+    LastMOVE.setPreferredSize(new Dimension(150, 100));
+    leftPanel.add(LastMOVE, BorderLayout.CENTER);
 
     return leftPanel;
 }
 
+//store properties for top of the panel
+private JPanel createTop(){
+        //setting the top panel with name, ip, port, and connect
+        JPanel topPanel = new JPanel(new FlowLayout());
+
+
+        PlaySymbol = new JTextField(7);
+        topPanel.add(new JLabel("Player: "));
+        topPanel.add(PlaySymbol);
+
+        
+        // displays IP Address
+        IP_Address = new JTextField(7);
+        topPanel.add(new JLabel("IP Address: "));
+        topPanel.add(IP_Address);
+        
+        //displays the port used
+        PortNum = new JTextField(5);
+        topPanel.add(new JLabel("Port: "));
+        topPanel.add(PortNum);
+
+        Connect_Disconnect = new JButton("Connect");
+        topPanel.add(Connect_Disconnect);
+
+        return topPanel;
+
     }
+
+    private JPanel createMiddlePanel(){
+
+        JPanel middlePanel = new JPanel(new BorderLayout());
+
+        JTextArea statusTextArea = new JTextArea();
+        statusTextArea.setEditable(false);
+        statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 18)); // Adjusted font size
+        statusTextArea.setText("Player X's turn");
+        middlePanel.add(statusTextArea, BorderLayout.NORTH);
+
+        JPanel boardPanel = new JPanel(new GridLayout(3, 3));
+        JButton[][] boardButtons = new JButton[3][3];
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardButtons[i][j] = new JButton();
+                boardButtons[i][j].setFont(new Font(Font.SERIF, Font.PLAIN, 24)); // Adjusted font size
+                boardPanel.add(boardButtons[i][j]);
+            }
+        }
+        middlePanel.add(boardPanel, BorderLayout.CENTER);
+
+        return middlePanel;
+    }
+
+    private JPanel createBottomPanel(){
+        //adding instructions how to play the game at the bottom
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        JLabel howToLabel = new JLabel("How to Play: ");
+        bottomPanel.add(howToLabel);
+        HowTo = new JTextArea();
+        HowTo.setPreferredSize(new Dimension(700, 50));
+        bottomPanel.add(HowTo);
+        HowTo.setText("You will be randomly assigned a symbol: 'X' or 'O'.\n"
+        + "Click on one of the buttons on the board to make your move.\n"
+        + "To win, create a column, row, or diagonal pattern with your symbol before the other player can.\n"
+        + "A draw will only occur when the entire board is used up and neither player was able to create one of the patterns.");
+        HowTo.setEditable(false);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        return bottomPanel;
+    }
+
+
 
     public static void main(String[] args) 
     {
-        // create an instance of EnigmaFrame and calls it to run
-        GameGUI gameGUI = new GameGUI();
-        gameGUI.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            GameGUI gameGUI = new GameGUI();
+            gameGUI.setVisible(true);
+        });
     }
 }
 //GUI for the game

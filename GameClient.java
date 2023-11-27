@@ -1,4 +1,4 @@
-import java.io.*;
+/*import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -32,7 +32,7 @@ public class GameClient{
     }
 
     //allow for reading the incoming move
-    private class ReadingThread extends Thread{
+    /*private class ReadingThread extends Thread{
         //function to be able to run the actaul thread
         public void run(){
             //allow to run correctly
@@ -142,7 +142,7 @@ public class GameClient{
         }
     }
 
-}
+}*/
 //connect toServer to connect the server and initialize the gae state
 //sendMove(move:move) to send use moves to the server for processing
 //updateGui to update the local graphic user interface based on server update 
