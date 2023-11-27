@@ -24,7 +24,7 @@ public class GameGUI extends JFrame
     private JButton Click1C;
     private JButton Click2C;
     private JButton Click3C;
-
+   
     //used to connect GameClient
     private GameClient newPlayer;
 
@@ -49,19 +49,21 @@ public class GameGUI extends JFrame
         // displays IP Address
         IP_Address = new JTextField(7);
         topPanel.add(new JLabel("IP Address "));
-        IP_Address.setText("");
+        //IP_Address.setText(""); don't think we need
         topPanel.add(IP_Address);
         
         //displays the port used
         PortNum = new JTextField(5);
         topPanel.add(new JLabel("Port "));
-        PortNum.setText("");
+        //PortNum.setText(""); don't need this
         topPanel.add(PortNum);
-        add(topPanel); 
+        //add(topPanel);  don't think we need
 
         // creates the connect button
         Connect_Disconnect = new JButton("Connect");
+        Connect_Disconnect.addActionListener(new connectAction());
         topPanel.add(Connect_Disconnect);
+        add(topPanel, BorderLayout.NORTH);
 
         //adding instructions how to play the game at the bottom
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
