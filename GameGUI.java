@@ -17,13 +17,15 @@ public class GameGUI extends JFrame
     private JTextArea LastMOVE;
     private JButton New_Game;
     //used to connect GameClient
-    //private GameClient newPlayer;
+    private GameClient gameGUI;
 
     private JLabel optionsLabel;
     private JButton newGameButton;
     private JButton quitGameButton;
     private JLabel yourSymbolLabel;
     private JTextArea userSymbolTextArea;
+
+    private JButton[][] boardButtons;  
 
     public GameGUI()
     {
@@ -121,12 +123,14 @@ private JPanel createRightPanel() {
     newGameButton.setPreferredSize(new Dimension(100, 20));
     //newGameButton.addActionListener(new NewGameButtonActionListener());
     optionsButtonsPanel.add(newGameButton);
+    //need to create a function or call restart boad to allow for nee game to be able to be started
 
     // Create a JButton to quit the current game
     quitGameButton = new JButton("Quit Game");
     quitGameButton.setPreferredSize(new Dimension(100, 20));
     //quitGameButton.addActionListener(new QuitGameButtonActionListener());
     optionsButtonsPanel.add(quitGameButton);
+    //class so when clicked it reset the board and you leave the server
 
     // Create a JLabel for the "Your symbol is" section
     yourSymbolLabel = new JLabel("Your symbol is:");
@@ -164,17 +168,22 @@ private JPanel createLeftPanel() {
     LastMOVE.setEditable(false);
     LastMOVE.setPreferredSize(new Dimension(150, 100));
     leftPanel.add(LastMOVE, BorderLayout.CENTER);
+    //new to add text that diaply the player symbol who has the las move as well as what the 
+    //last possible thing a player can click
 
     return leftPanel;
 }
 
 //store properties for top of the panel
 private JPanel createTop(){
+    //edit top half where the player symbol that they type X or O, The ip Address and the port get sent to the GameClient
+    //Also add connect action to the connect and disconnect button
+
         //setting the top panel with name, ip, port, and connect
         JPanel topPanel = new JPanel(new FlowLayout());
 
         PlaySymbol = new JTextField(7);
-        topPanel.add(new JLabel("Player: "));
+        topPanel.add(new JLabel("Player Symbol: "));
         topPanel.add(PlaySymbol);
 
         
@@ -189,6 +198,7 @@ private JPanel createTop(){
         topPanel.add(PortNum);
 
         Connect_Disconnect = new JButton("Connect");
+        Connect_Disconnect.addActionListener(new connectAction());
         topPanel.add(Connect_Disconnect);
 
         return topPanel;
@@ -197,6 +207,9 @@ private JPanel createTop(){
 
     private JPanel createMiddlePanel(){
 
+        //add that when you click a button it get remove and reveal the empty behind
+        //need to add hash in the backgroup as wll as when you remove the button
+        //your specific symbol appear in the backgroud
         JPanel middlePanel = new JPanel(new BorderLayout());
 
         JTextArea statusTextArea = new JTextArea();
@@ -206,12 +219,13 @@ private JPanel createTop(){
         middlePanel.add(statusTextArea, BorderLayout.NORTH);
 
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
-        JButton[][] boardButtons = new JButton[3][3];
+        boardButtons = new JButton[3][3];
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 boardButtons[i][j] = new JButton();
                 boardButtons[i][j].setFont(new Font(Font.SERIF, Font.PLAIN, 24)); // Adjusted font size
+                boardButtons[i][j].addActionListener(new BoardButtonClickListener());
                 boardPanel.add(boardButtons[i][j]);
             }
         }
@@ -239,6 +253,102 @@ private JPanel createTop(){
         return bottomPanel;
     }
 
+    private class connectAction implements ActionListener {
+    
+        public void actionPerformed(ActionEvent e) {
+            //get name
+            String symbol = PlaySymbol.getText();
+            //get host
+            String host = IP_Address.getText();
+            //get port
+            int port = Integer.parseInt(PortNum.getText());
+            //sent it to clientnetwork to be able to run
+            gameGUI = new GameClient(symbol, host, port, GameGUI.this);
+            //try for error
+            try{
+                //call checkConnect in ClientNetworking
+                if (gameGUI.connectToServer()) {
+                    //change properties for button
+                    GameGUI.this.Connect_Disconnect.removeActionListener(this);
+                    GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
+                    GameGUI.this.Connect_Disconnect.setText("Disconnect");
+                    }
+                }
+                //when error but a try catch saying ipaddress doesn't exist
+                 catch (NumberFormatException n) {
+                    JOptionPane.showMessageDialog(GameGUI.this, "APIddress number does not exist", " connection failed", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+        
+        //disconnect properties
+        private class disconnectAction implements ActionListener{
+            public void actionPerformed(ActionEvent e){
+                //change the propeties to button to disconnect
+                GameGUI.this.Connect_Disconnect.removeActionListener(this);
+                GameGUI.this.Connect_Disconnect.addActionListener(new connectAction());
+                GameGUI.this.Connect_Disconnect.setText("Connect");
+                //reset everything to empty
+                
+                //reset the boardPanel
+                resetBoardPanel();
+                gameGUI.disconnect();
+    
+            }
+        }
+
+
+        // new method to reset boardPanel
+    private void resetBoardPanel() {
+        //somehow calls the private NewMove button so when you clik that too the game resets
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardButtons[i][j].setText("");
+            }
+        }
+    }
+    // new class for board button click listener
+    private class BoardButtonClickListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            JButton clickedButton = (JButton) e.getSource();
+            
+            // Remove the clicked button
+            //boardPanel.remove(clickedButton);
+            
+            // Refresh the layout
+            //boardPanel.revalidate();
+            //boardPanel.repaint();
+        }
+    }
+
+    public void updatePlayer(String player){
+        //change like chnge jBotton when the opp player make a moove
+        //used in GameClient
+
+    }
+
+    public void receiveMove(String move){
+        //recieve the move from opp player
+        //used in GameClient
+
+
+    }
+
+    public void sendMove(String Move){
+        //send yo new jButton        
+        //used in GameClient
+
+
+
+    }
+
+    public void StateError(String msg){
+        JOptionPane.showMessageDialog(null, msg, "Error!", JOptionPane.ERROR_MESSAGE);
+    }
+
+
+
+
 
     public static void main(String[] args) 
     {
@@ -248,6 +358,8 @@ private JPanel createTop(){
         });
     }
 }
+
+
 //GUI for the game
 
 //pseudo code for GUI - done by gabby 
