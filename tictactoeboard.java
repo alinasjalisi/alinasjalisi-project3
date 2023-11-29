@@ -1,4 +1,5 @@
 //logic for constituting a win/draw/loss
+// TODO: add pop ups for when someone wins or draws
 
 public class tictactoeboard {
 

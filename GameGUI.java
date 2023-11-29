@@ -4,6 +4,9 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+// QUIT GAME leaves the server
+// NEW GAME creates new game with the same person
+
 public class GameGUI extends JFrame
 {
     //private methods to everythings we are creating
@@ -119,6 +122,7 @@ private JPanel createRightPanel() {
     JPanel optionsButtonsPanel = new JPanel(new GridLayout(3, 1));
 
     // Create a JButton to start a new game
+    // TODO: new game button calls the resetBoardPanel - make sure it restarts player board and keeps same symbol
     newGameButton = new JButton("New Game");
     newGameButton.setPreferredSize(new Dimension(100, 20));
     //newGameButton.addActionListener(new NewGameButtonActionListener());
@@ -126,6 +130,7 @@ private JPanel createRightPanel() {
     //need to create a function or call restart boad to allow for nee game to be able to be started
 
     // Create a JButton to quit the current game
+    // TODO: quit game button calls resetBoardPanel and leaves the server (call disconnect)
     quitGameButton = new JButton("Quit Game");
     quitGameButton.setPreferredSize(new Dimension(100, 20));
     //quitGameButton.addActionListener(new QuitGameButtonActionListener());
@@ -133,6 +138,7 @@ private JPanel createRightPanel() {
     //class so when clicked it reset the board and you leave the server
 
     // Create a JLabel for the "Your symbol is" section
+    // TODO: gets the randomly assigned symbol and displays it
     yourSymbolLabel = new JLabel("Your symbol is:");
     yourSymbolLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
     optionsButtonsPanel.add(yourSymbolLabel);
@@ -144,7 +150,7 @@ private JPanel createRightPanel() {
     userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
     // Need to call a method from a different class to get the user's symbol
-    userSymbolTextArea.setText("X");
+    userSymbolTextArea.setText(" X");
     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 80)));
     // Maybe an if statement changing it to userSymbolTextArea.setText("O");
     // if the method that sets user symbols already assigned player 1 X
@@ -181,11 +187,6 @@ private JPanel createTop(){
 
         //setting the top panel with name, ip, port, and connect
         JPanel topPanel = new JPanel(new FlowLayout());
-
-        PlaySymbol = new JTextField(7);
-        topPanel.add(new JLabel("Player Symbol: "));
-        topPanel.add(PlaySymbol);
-
         
         // displays IP Address
         IP_Address = new JTextField(7);
@@ -215,12 +216,13 @@ private JPanel createTop(){
         JTextArea statusTextArea = new JTextArea();
         statusTextArea.setEditable(false);
         statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 18)); // Adjusted font size
-        statusTextArea.setText("Player X's turn");
+
+        statusTextArea.setText("                                                   Player X's turn");
         middlePanel.add(statusTextArea, BorderLayout.NORTH);
 
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
         boardButtons = new JButton[3][3];
-
+        //  TODO: create action listener that when u click it it disappears and turns into that symbol
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 boardButtons[i][j] = new JButton();
@@ -253,6 +255,7 @@ private JPanel createTop(){
         return bottomPanel;
     }
 
+    //TODO : when player connects have them be randomly assigned 
     private class connectAction implements ActionListener {
     
         public void actionPerformed(ActionEvent e) {
@@ -358,51 +361,5 @@ private JPanel createTop(){
         });
     }
 }
-
-
-//GUI for the game
-
-//pseudo code for GUI - done by gabby 
-/*
- *  JFrame labeled "TicTacToe"
- * 
- *  mainPanel - contains board
- * make all 9 parts of the board clickable
- *  when O clicks on a blank, it turns into an O
- *  when X clicks on a blank, it turns into an X
- *  after the user clicks that area becomes NON EDITABLE
- * 
- * option button QUIT to end game
- * 
- * bottomPanel - JTextfield with instructions
- * top panel for ip port
- * 3 more pannels
- * 1. middle for status and tictactoe board - main pannel
- * 2. right - options and your symbol
- * 3. left - last position 
- * 
- * display Player's symbol in bottom right corner
- * 
- * status changes of player's turn
- * 
- */
-
-/*add for fucntion and stuff - Sere
-button for x and o
-//create an instance of Gamelient
-//check ifConnected to server
-//send message such as x and o
-//recieve essage like x and o
-//error handling
-//logic to quit the current game and start aew one
-//shoes the symbol
-//the game status like whos is who turn and such
-
-//craete an updateBoardMethd: to update the gameboard once action are done and reflecte cahnge made in the tictactoesboard
-//displayStatus(): display the current came state
-//playerTurn: method to display when it a certain person turn
-
-
-*/ 
 
 
