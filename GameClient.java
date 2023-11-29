@@ -2,6 +2,9 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 //client side cod
 //allow gameserver to call class
@@ -17,7 +20,8 @@ public class GameClient{
     //check that the user is correctly connect to the server
     private boolean check = false;
     //store the player symbol
-    private final String symbol;
+    private String symbol;
+    private static final Set<String> assignedSymbols = new HashSet<>();
     //store the ipaddress
     private final String serverAddress;
     //store the port number
@@ -36,9 +40,8 @@ public class GameClient{
     }
 
     //allow for reading the incoming move
-    private class ReadingThread extends Thread{
-        //store symbol of player
-        protected String symbol;
+    private class ReadingThread extends Thread
+    {
         //function to be able to run the actaul thread
         public void run() {
             try {
@@ -70,11 +73,29 @@ public class GameClient{
             }
         }
 
+        // Assigns a random symbol to the player once connected, either X or O
+        public void assignSymbol() 
+        {
+            // Keep generating a random symbol until an unassigned one is found
+            do 
+            {
+                Random random = new Random();
+                this.symbol = (random.nextBoolean()) ? "X" : "O";
+            } 
+            while (!assignedSymbols.add(this.symbol)); // Add the symbol to the set, continue if it's already assigned
+        }
+
+        //getter function
+        public String getSymbol() 
+        {
+            return symbol;
+        }
+
         //check if player is connected to server and used in GameGui
         public boolean connectToServer(){
             try{
                 //call the disconnect function
-                disconnect();
+                //disconnect();
 
                 socket = new Socket(serverAddress, serverport);
                 //call to be able to show other player move
@@ -91,6 +112,7 @@ public class GameClient{
                 //check if the function is tru
                 check = true;
                 //return since it work to help with later boolean
+                System.out.println("Connected");
                 return true;
             }catch (UnknownHostException e) {
                 //error if invalid ip

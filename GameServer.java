@@ -1,9 +1,66 @@
 import java.io.*;
-/*import java.net.ServerSocket;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+public class GameServer implements Runnable {
+    private ServerSocket serverSock;
+    private List<GameClient> connectedClients;
+
+    public GameServer(int serverPort) {
+        try {
+            serverSock = new ServerSocket(serverPort);
+            connectedClients = new ArrayList<>();
+        } catch (IOException e) {
+            System.err.println("Cannot establish server socket");
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                Socket playerSocket = serverSock.accept();
+
+                // Assuming GameClient constructor requires symbol, host, port, and GameGUI.this
+                GameClient client = new GameClient(
+                        "X",  // Default symbol for now, adjust as needed
+                        "localhost",   // Example host, adjust as needed
+                        1234,  // Example port, adjust as needed
+                        null  // Example GameGUI.this, adjust as needed
+                );
+
+                connectedClients.add(client);
+
+                // Start a new thread to handle the client
+                Thread clientThread = new Thread();
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // Close server socket if needed
+        }
+    }
+
+    // Other methods...
+
+    public static void main(String[] args) {
+        int serverPort = 1234; // Your desired port
+        GameServer server = new GameServer(serverPort);
+
+        // Start the server in a separate thread
+        Thread serverThread = new Thread(server);
+        serverThread.start();
+    }
+}
+
+
+
+/*
 //code for the server
 //has instance if tictactoe board to manage state and enofr game logic
 //help manage GameClient to connect two different user

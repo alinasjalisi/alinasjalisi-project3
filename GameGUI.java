@@ -138,7 +138,7 @@ private JPanel createRightPanel() {
     //class so when clicked it reset the board and you leave the server
 
     // Create a JLabel for the "Your symbol is" section
-    // TODO: gets the randomly assigned symbol and displays it
+    // TODO: gets the randomly assigned symbol and displays it, has it blank until assigned a symbol
     yourSymbolLabel = new JLabel("Your symbol is:");
     yourSymbolLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
     optionsButtonsPanel.add(yourSymbolLabel);
@@ -150,6 +150,7 @@ private JPanel createRightPanel() {
     userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
     // Need to call a method from a different class to get the user's symbol
+    //TODO: have it so that its blank first and then sets symbol from the method in GameClient
     userSymbolTextArea.setText(" X");
     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 80)));
     // Maybe an if statement changing it to userSymbolTextArea.setText("O");
@@ -268,18 +269,26 @@ private JPanel createTop(){
             //sent it to clientnetwork to be able to run
             gameGUI = new GameClient(symbol, host, port, GameGUI.this);
             //try for error
-            try{
+            try
+            {
                 //call checkConnect in ClientNetworking
-                if (gameGUI.connectToServer()) {
+                if (gameGUI.connectToServer() == true) 
+                {
                     //change properties for button
                     GameGUI.this.Connect_Disconnect.removeActionListener(this);
                     GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
                     GameGUI.this.Connect_Disconnect.setText("Disconnect");
-                    }
+
+                    //then have the player assigned a random symbol
+                    gameGUI.assignSymbol();
+
+                    // Now you can access the player's symbol using gameGUI.getSymbol() or a similar method
+                    JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Assigned", JOptionPane.INFORMATION_MESSAGE);
                 }
+            }
                 //when error but a try catch saying ipaddress doesn't exist
                  catch (NumberFormatException n) {
-                    JOptionPane.showMessageDialog(GameGUI.this, "APIddress number does not exist", " connection failed", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(GameGUI.this, "IP address number does not exist", " connection failed", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
