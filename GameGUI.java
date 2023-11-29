@@ -61,7 +61,7 @@ public class GameGUI extends JFrame
 
         // creates the connect button
         Connect_Disconnect = new JButton("Connect");
-        Connect_Disconnect.addActionListener(new connectAction());
+        //Connect_Disconnect.addActionListener(new connectAction()); //sere's part
         topPanel.add(Connect_Disconnect);
         add(topPanel, BorderLayout.NORTH);
 

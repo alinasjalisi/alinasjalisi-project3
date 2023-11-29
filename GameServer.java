@@ -182,9 +182,6 @@ public void updateClient(){
 public String getCurrentState(){
     //reset the gae board, update client ad display update to the clients
 }
-
-
-
         
 
 public static void main(String args[]) {
