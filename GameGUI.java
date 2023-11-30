@@ -1,7 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 // QUIT GAME leaves the server
@@ -337,18 +343,65 @@ private JPanel createTop(){
         //change like chnge jBotton when the opp player make a moove
         //used in GameClient
 
+        yourSymbolLabel.setText(player);
+
     }
+
 
     public void receiveMove(String move){
         //recieve the move from opp player
         //used in GameClient
 
+        // Split the move string into coordinates (row, column)
+        String[] coordinates = move.split(",");
+        int row = Integer.parseInt(coordinates[0]);
+        int col = Integer.parseInt(coordinates[1]);
 
+        // Update the board with the opponent's move
+        boardButtons[row][col].setText(symbol);
+
+        // Check if the game has ended
+        if (isWinner()) {  //isWinner from tictactoeboard.java
+            handleGameOver();
+        } else {
+            // Switch players
+            currentPlayer = opponent;
+            updatePlayer(opponent);
+        }
     }
 
     public void sendMove(String Move){
         //send yo new jButton        
         //used in GameClient
+
+
+        try {
+            // Get the socket connected to the server
+            Socket socket = getServerSocket();
+
+            // Send the move string to the server
+            OutputStream outputStream = socket.getOutputStream();
+            PrintWriter printWriter = new PrintWriter(outputStream);
+            printWriter.println(move);
+            printWriter.flush();
+
+            // Wait for the server's response
+            InputStream inputStream = socket.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String response = bufferedReader.readLine();
+
+            // Handle the server's response
+            if (response.equals("MOVE_ACCEPTED")) {
+                // The move was accepted, proceed with updating the board
+                boardButtons[row][col].setText(opponentSymbol);
+            } else {
+                // The move was rejected, display an error message
+                StateError("Invalid move");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            StateError("Connection error");
+        }
 
 
 
@@ -358,6 +411,109 @@ private JPanel createTop(){
         JOptionPane.showMessageDialog(null, msg, "Error!", JOptionPane.ERROR_MESSAGE);
     }
 
+
+    //ACTION LISTNERS FOR BUTTONS: 
+        
+    // Add event handlers for game board buttons
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardButtons[i][j].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // Handle button click
+                        handleButtonClick(i, j);
+                    }
+                });
+            }
+        }
+
+        // Add event handler for "New Game" button
+        newGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle new game request
+                handleNewGameRequest();
+            }
+        });
+
+        // Add event handler for "Quit Game" button
+        quitGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle quit game request
+                handleQuitGameRequest();
+            }
+        });
+    }
+
+    // Method to handle button clicks
+    private void handleButtonClick(int row, int col) {
+        if (boardButtons[row][col].isEnabled()) { // Check if cell is empty
+            // Update the board and send it to the server
+            gameClient.sendMove(row, col);
+
+            // Disable the clicked button to prevent further clicks
+            boardButtons[row][col].setEnabled(false);
+        }
+    }
+
+    private void disableAllButtons() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (boardButtons[row][col].isEnabled()) {
+                    boardButtons[row][col].setEnabled(false);
+                }
+            }
+        }
+}
+
+
+    // Method to handle new game request - idk if this works lol...
+    private void handleNewGameRequest() {
+        gameClient.sendNewGameRequest();
+    }
+
+    // Method to handle quit game request
+    private void handleQuitGameRequest() {
+        gameClient.sendQuitGameRequest();
+        System.exit(0); // Terminate the application
+    }
+
+    // Method to handle receiving updated board state from the server
+    public void updateBoardState(char[][] updatedBoard) {
+        // Update the game board buttons based on the received board state
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardButtons[i][j].setText(String.valueOf(updatedBoard[i][j]));
+            }
+        }
+
+        // Enable buttons that were previously disabled due to user clicks
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                boardButtons[i][j].setEnabled(true);
+            }
+        }
+
+        // Check for a winner or draw
+        if (tictactoeboard.isWinner(gameClient.getSymbol())) {
+            displayWinMessage();
+            disableAllButtons();
+        } else if (tictactoeboard.isDraw()) {
+            displayDrawMessage();
+            disableAllButtons();
+        }
+    }
+
+    // Method to display a congratulatory message for the winner
+    private void displayWinMessage() {
+        JOptionPane.showMessageDialog(this, "Congratulations, you won!");
+    }
+
+    // Method to display a message indicating a draw
+    private void displayDrawMessage() {
+        JOptionPane.showMessageDialog(this, "It's a draw!");
+    }
 
 
 

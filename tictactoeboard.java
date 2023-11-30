@@ -1,6 +1,8 @@
 //logic for constituting a win/draw/loss
 // TODO: add pop ups for when someone wins or draws
 
+import javax.swing.JOptionPane;
+
 public class tictactoeboard {
 
     // Creates a 2D character array to represent the 3x3 board
@@ -36,11 +38,14 @@ public class tictactoeboard {
     // Method to check if the specified symbol has won the game
     public boolean isWinner(char symbol) {
         //evaluates if any of the checkRows, checkColumns, or checkDiagonals methods are true. 
-            //if even one of them is true, then isWinner returns true (as perscribed in the 3 methods below)
-            //if all of them are false, then isWinner returns false (as perscribed in the 3 methods below)
-        return (checkRows(symbol) || checkColumns(symbol) || checkDiagonals(symbol));
-        //****** should we have a statement here declaring witch symbol is a winner? or will that be in GUI/client
-        // call stateWin method from gameGUI that prompts game to call a pop up message that displays which user x or o won
+            //if even one of them is true, then isWinner returns true (as perscribed in the 3 methods below) if all of them are false, then isWinner returns false (as perscribed in the 3 methods below)
+
+            if (checkRows(symbol) || checkColumns(symbol) || checkDiagonals(symbol)) {
+                // Display a pop-up message declaring the winner
+                JOptionPane.showMessageDialog(null, "Player " + symbol + " has won!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
+            return false;
         
     }
 
@@ -93,10 +98,17 @@ public class tictactoeboard {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j] == '-') {
                     return false;
+                } else {
+                    // If all cells are occupied and no winner, it's a draw
+                    JOptionPane.showMessageDialog(null, "The game is a draw!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+                    return true;
                 }
-            }
-        }
+            } 
+        } 
+        JOptionPane.showMessageDialog(null, "The game is a draw!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
         return true;
+
+                 
     }
 
     //relays the current board state when called
