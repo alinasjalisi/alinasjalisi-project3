@@ -10,7 +10,7 @@ import java.util.Set;
 //allow gameserver to call class
 //magage the local Gui
 //sed and recieve udate from the server
-public class GameClient{
+public class GameClient implements Runnable{
     //used to read incoming move from person you are playing against
     private BufferedReader read;
     //used to write in order to send moe to other player
@@ -40,28 +40,27 @@ public class GameClient{
     }
 
     //allow for reading the incoming move
-    private class ReadingThread extends Thread
-    {
-        //function to be able to run the actaul thread
-        public void run() {
-            try {
-                while (true) {
-                    String receivedMove = read.readLine();
-        
-                    if (receivedMove == null) {
-                        check = false;
-                        disconnect();
-                    } else if (check) {
-                        gameGUI.updatePlayer(receivedMove);
-                    } else {
-                        gameGUI.receiveMove(receivedMove);
-                    }
-                }
-            } catch (IOException e) {
-                if (isConnected()) {
+    @Override
+    public void run() {
+        try {
+            // Initialize resources (send, receive, etc.)
+
+            while (true) {
+                String receivedMove = read.readLine();
+
+                if (receivedMove == null) {
+                    check = false;
                     disconnect();
-                    gameGUI.StateError("Server Has Disconnected");
+                } else if (check) {
+                    gameGUI.updatePlayer(receivedMove);
+                } else {
+                    gameGUI.receiveMove(receivedMove);
                 }
+            }
+        } catch (IOException e) {
+            if (isConnected()) {
+                disconnect();
+                gameGUI.StateError("Server Has Disconnected");
             }
         }
     }
@@ -92,50 +91,47 @@ public class GameClient{
         }
 
         //check if player is connected to server and used in GameGui
-        public boolean connectToServer(){
-            try{
-                //call the disconnect function
-                //disconnect();
-
+        public boolean connectToServer() {
+            try {
+                // Close existing resources if any
+                disconnect();
+        
                 socket = new Socket(serverAddress, serverport);
-                //call to be able to show other player move
                 write = new PrintWriter(socket.getOutputStream(), true);
-                //call read to input
                 read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                //perform handskate to insure to convey trust, respect, balance, and equalit
+        
+                // Perform handshake
                 write.println("SECRET\n3c3c4ac618656ae32b7f3431e75f7b26b1a14a87\nNAME\n" + symbol);
-                //delete stuff
                 write.flush();
-                //call read function
-                new ReadingThread().start();
-                //check if the function is tru
+        
+                // Instantiate the ReadingThread
+                ReadingThread readingThread = new ReadingThread();
+                
+                // Start a new thread to handle reading from the server
+                new Thread(readingThread).start();
+        
                 check = true;
-                //return since it work to help with later boolean
                 System.out.println("Connected");
                 return true;
-            }catch (UnknownHostException e) {
-                //error if invalid ip
+            } catch (UnknownHostException e) {
                 e.printStackTrace();
-                gameGUI.StateError("Invalid Port. Please enter a valid port number.");
-                return false;
+                gameGUI.StateError("Invalid Host. Please enter a valid host address.");
             } catch (NumberFormatException e) {
-                //error is invalid port
                 e.printStackTrace();
                 gameGUI.StateError("Invalid Port. Please enter a valid port number.");
-                return false;
             } catch (ConnectException e) {
-                //error if connection doesn't work
                 e.printStackTrace();
                 gameGUI.StateError("Connection refused. Please check the server availability.");
-                return false;
             } catch (IOException e) {
-                //anything could be wrong
                 e.printStackTrace();
-                gameGUI.StateError("Invalid Port and/or IP Address. Please try again.");
-                return false;
+                gameGUI.StateError("Connection error");
             }
+        
+            // Close resources if there's an exception
+            disconnect();
+            return false;
         }
+        
         
         //store if player is connected to server
         public boolean isConnected(){
@@ -143,22 +139,25 @@ public class GameClient{
         }
 
         //fucntion to perform diconnection
-        public void disconnect(){
-            //allow for everything to close and state not connected
-            try{
-                if(isConnected()){
-                    write.close();
-                    read.close();
+        private void disconnect() {
+            try {
+                if (socket != null) {
                     socket.close();
-                    check = false;
                 }
-            }catch(IOException e){
+                if (write != null) {
+                    write.close();
+                }
+                if (read != null) {
+                    read.close();
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
 
 }
+
 //connect toServer to connect the server and initialize the gae state
 //sendMove(move:move) to send use moves to the server for processing
 //updateGui to update the local graphic user interface based on server update 

@@ -36,8 +36,9 @@ public class GameServer implements Runnable {
                 connectedClients.add(client);
 
                 // Start a new thread to handle the client
-                Thread clientThread = new Thread();
+                Thread clientThread = new Thread(client);
                 clientThread.start();
+
             }
         } catch (IOException e) {
             e.printStackTrace();

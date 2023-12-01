@@ -164,7 +164,6 @@ private JPanel createRightPanel() {
 
     // Add the user symbol text area to the right panel
     rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
-
     return rightPanel;
 }
 
@@ -243,7 +242,8 @@ private JPanel createTop(){
         return middlePanel;
     }
 
-    private JPanel createBottomPanel(){
+    private JPanel createBottomPanel()
+    {
         //adding instructions how to play the game at the bottom
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -317,17 +317,22 @@ private JPanel createTop(){
 
 
         // new method to reset boardPanel
-    private void resetBoardPanel() {
+    private void resetBoardPanel() 
+    {
         //somehow calls the private NewMove button so when you clik that too the game resets
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++) 
+        {
+            for (int j = 0; j < 3; j++) 
+            {
                 boardButtons[i][j].setText("");
             }
         }
     }
     // new class for board button click listener
-    private class BoardButtonClickListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+    private class BoardButtonClickListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e) 
+        {
             JButton clickedButton = (JButton) e.getSource();
             
             // Remove the clicked button
@@ -339,7 +344,8 @@ private JPanel createTop(){
         }
     }
 
-    public void updatePlayer(String player){
+    public void updatePlayer(String player)
+    {
         //change like chnge jBotton when the opp player make a moove
         //used in GameClient
 
@@ -358,7 +364,8 @@ private JPanel createTop(){
         int col = Integer.parseInt(coordinates[1]);
 
         // Update the board with the opponent's move
-        boardButtons[row][col].setText(symbol);
+        String opponentSymbol = gameGUI.getSymbol();
+        boardButtons[row][col].setText(symbol); // getSymbol is from GameClient why isnt it working?
 
         // Check if the game has ended
         if (isWinner()) {  //isWinner from tictactoeboard.java
@@ -402,12 +409,10 @@ private JPanel createTop(){
             e.printStackTrace();
             StateError("Connection error");
         }
-
-
-
     }
 
-    public void StateError(String msg){
+    public void StateError(String msg)
+    {
         JOptionPane.showMessageDialog(null, msg, "Error!", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -415,11 +420,15 @@ private JPanel createTop(){
     //ACTION LISTNERS FOR BUTTONS: 
         
     // Add event handlers for game board buttons
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                boardButtons[i][j].addActionListener(new ActionListener() {
+        for (int i = 0; i < 3; i++) 
+        {
+            for (int j = 0; j < 3; j++) 
+            {
+                boardButtons[i][j].addActionListener(new ActionListener() 
+                {
                     @Override
-                    public void actionPerformed(ActionEvent e) {
+                    public void actionPerformed(ActionEvent e) 
+                    {
                         // Handle button click
                         handleButtonClick(i, j);
                     }
@@ -428,9 +437,11 @@ private JPanel createTop(){
         }
 
         // Add event handler for "New Game" button
-        newGameButton.addActionListener(new ActionListener() {
+        newGameButton.addActionListener(new ActionListener() 
+        {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) 
+            {
                 // Handle new game request
                 handleNewGameRequest();
             }
@@ -447,8 +458,10 @@ private JPanel createTop(){
     }
 
     // Method to handle button clicks
-    private void handleButtonClick(int row, int col) {
-        if (boardButtons[row][col].isEnabled()) { // Check if cell is empty
+    private void handleButtonClick(int row, int col) 
+    {
+        if (boardButtons[row][col].isEnabled()) 
+        { // Check if cell is empty
             // Update the board and send it to the server
             gameClient.sendMove(row, col);
 
@@ -457,10 +470,14 @@ private JPanel createTop(){
         }
     }
 
-    private void disableAllButtons() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                if (boardButtons[row][col].isEnabled()) {
+    private void disableAllButtons() 
+    {
+        for (int row = 0; row < 3; row++) 
+        {
+            for (int col = 0; col < 3; col++) 
+            {
+                if (boardButtons[row][col].isEnabled()) 
+                {
                     boardButtons[row][col].setEnabled(false);
                 }
             }
@@ -469,37 +486,46 @@ private JPanel createTop(){
 
 
     // Method to handle new game request - idk if this works lol...
-    private void handleNewGameRequest() {
+    private void handleNewGameRequest() 
+    {
         gameClient.sendNewGameRequest();
     }
 
     // Method to handle quit game request
-    private void handleQuitGameRequest() {
+    private void handleQuitGameRequest() 
+    {
         gameClient.sendQuitGameRequest();
         System.exit(0); // Terminate the application
     }
 
     // Method to handle receiving updated board state from the server
-    public void updateBoardState(char[][] updatedBoard) {
+    public void updateBoardState(char[][] updatedBoard) 
+    {
         // Update the game board buttons based on the received board state
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++) 
+        {
+            for (int j = 0; j < 3; j++) 
+            {
                 boardButtons[i][j].setText(String.valueOf(updatedBoard[i][j]));
             }
         }
 
         // Enable buttons that were previously disabled due to user clicks
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++) 
+        {
+            for (int j = 0; j < 3; j++) 
+            {
                 boardButtons[i][j].setEnabled(true);
             }
         }
 
         // Check for a winner or draw
-        if (tictactoeboard.isWinner(gameClient.getSymbol())) {
+        if (tictactoeboard.isWinner(gameClient.getSymbol())) 
+        {
             displayWinMessage();
             disableAllButtons();
-        } else if (tictactoeboard.isDraw()) {
+        } else if (tictactoeboard.isDraw()) 
+        {
             displayDrawMessage();
             disableAllButtons();
         }
@@ -514,9 +540,6 @@ private JPanel createTop(){
     private void displayDrawMessage() {
         JOptionPane.showMessageDialog(this, "It's a draw!");
     }
-
-
-
 
     public static void main(String[] args) 
     {

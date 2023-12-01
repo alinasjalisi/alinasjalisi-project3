@@ -9,7 +9,8 @@ public class tictactoeboard {
     private final char[][] board = new char[3][3];
 
     // Constructor that calls initializeboard() method to create a fresh board
-    public void TicTacToeBoard() {
+    public tictactoeboard() 
+    {
         //board = new char[3][3]; 
         initializeBoard();
     }
@@ -90,26 +91,19 @@ public class tictactoeboard {
     //NEED TO WORK ON THIS METHOD BC...
         //doesn't evaluate if draw happens even when not all cells are full 
         //doesn't have any connection to 3 above methods, do we only need to call isDraw when all 3 have failed? 
-    public boolean isDraw() {
-        //Check for empty cells: checks if the current cell is still occupied by the default '-' symbol. 
-        //If it finds an empty cell, it returns false, indicating that game is not a draw since there is still an available cell.
-        //maybe: if (!isWinner(symbol)) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] == '-') {
-                    return false;
-                } else {
-                    // If all cells are occupied and no winner, it's a draw
-                    JOptionPane.showMessageDialog(null, "The game is a draw!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                    return true;
+        public boolean isDraw() 
+        {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (board[i][j] == '-') {
+                        return false;
+                    }
                 }
-            } 
-        } 
-        JOptionPane.showMessageDialog(null, "The game is a draw!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-        return true;
-
-                 
-    }
+            }
+            JOptionPane.showMessageDialog(null, "The game is a draw!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+            return true;
+        }
+        
 
     //relays the current board state when called
     public char[][] getBoard() {
