@@ -16,35 +16,63 @@ import java.net.UnknownHostException;
 public class GameGUI extends JFrame
 {
     //private methods to everythings we are creating
-    //top buttons used to connect to the server
+
+    //get the player symbol and display it on the left side of the GUI
     private JTextField PlaySymbol;
+    //store the ipAddress
     private JTextField IP_Address;
+    //store the port number
     private JTextField PortNum;
-    private JTextArea HowTo; //instructions for game
+    //explain how to play the game
+    private JTextArea HowTo;
+    //botton to connect and disconnect
     private JButton Connect_Disconnect;
     //text for has the last move
     private JTextArea LastMOVE;
-    private JButton New_Game;
+    //when play wants to play a new game
+    //private JButton New_Game;
     //used to connect GameClient
     private GameClient gameGUI;
-
+    //label for option player can do on the right side of the GUI
     private JLabel optionsLabel;
+    //player wants to play a new game
     private JButton newGameButton;
+    //player want to quit the game
     private JButton quitGameButton;
+    //label to tell player what there symbol is
     private JLabel yourSymbolLabel;
+    //set the actual symbol either x or y
     private JTextArea userSymbolTextArea;
+    //store the 3x3 button
+    private JButton[][] boardButtons;
+    
+    //used for cient networking
+    private GameClient newPlayer;
 
-    private JButton[][] boardButtons;  
+    //store to keep track of player turn
+    private PlayerTurn playerTurn;
 
+    //stor whos the current player
+    private String currentPlayer;
+
+
+    //used to initialize an new instance of GameGui class
     public GameGUI()
     {
+        //set the title of the windo
         super("TicTacToe");
         //used to connect with the server methods
         startGameGUI();
     }
 
+    //ALLDONE
+    //used for initializing and orgarning the physical stuff
     private void startGameGUI()
     {
+        //initilize in game gui
+        playerTurn = new PlayerTurn(boardButtons);
+
+        //store title, size ad feature
         setTitle("TicTacToe(connected)");
         setSize(900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -54,6 +82,8 @@ public class GameGUI extends JFrame
         JPanel TFrame = new JPanel(new GridBagLayout());
         GridBagConstraints top_settings = new GridBagConstraints();
 
+        //create, configuring and add the top part of the game gui in main panle
+        //control the placemnet and layout behavior
         JPanel Top_part = createTop();
         top_settings.gridx = 0;
         top_settings.gridy = 0;
@@ -65,6 +95,8 @@ public class GameGUI extends JFrame
         JPanel LFrame = new JPanel(new GridBagLayout());
         GridBagConstraints left_settings = new GridBagConstraints();
 
+        //create, configuring and add the left part of the game gui in main panle
+
         JPanel Left_part = createLeftPanel();
         left_settings.gridx = 0;
         left_settings.gridy = 0;
@@ -72,7 +104,7 @@ public class GameGUI extends JFrame
         left_settings.fill = GridBagConstraints.BOTH;
         LFrame.add(Left_part, left_settings);
 
-        //store properties for the Middle section
+        //store properties for the middle part if the gui
         JPanel MFrame = new JPanel(new GridBagLayout());
         GridBagConstraints middle_settings = new GridBagConstraints();
 
@@ -84,7 +116,7 @@ public class GameGUI extends JFrame
         middle_settings.fill = GridBagConstraints.BOTH;
         MFrame.add(middle_part, middle_settings);
 
-        // Store properties for the right section
+        // Store properties for the right part of the gui
         JPanel RFrame = new JPanel(new GridBagLayout());
         GridBagConstraints right_settings = new GridBagConstraints();
 
@@ -96,7 +128,7 @@ public class GameGUI extends JFrame
         right_settings.fill = GridBagConstraints.BOTH;
         RFrame.add(right_part, right_settings);
 
-        // Store properties for the bottom section
+        // Store properties for the bottom part of the GUI
         JPanel BFrame = new JPanel(new GridBagLayout());
         GridBagConstraints bottom_settings = new GridBagConstraints();
 
@@ -108,7 +140,7 @@ public class GameGUI extends JFrame
         bottom_settings.fill = GridBagConstraints.HORIZONTAL;
         BFrame.add(bottom_part, bottom_settings);
 
-       // Add components to the main frame
+       //add all components to the main frame
        add(TFrame, BorderLayout.NORTH);
        add(LFrame, BorderLayout.WEST);
        add(MFrame, BorderLayout.CENTER);
@@ -116,6 +148,9 @@ public class GameGUI extends JFrame
        add(BFrame, BorderLayout.SOUTH);
    }
 
+
+//ALL DONE
+//store properties for the right part of the panel
 private JPanel createRightPanel() {
     JPanel rightPanel = new JPanel(new GridLayout(4, 1));
 
@@ -128,18 +163,20 @@ private JPanel createRightPanel() {
     JPanel optionsButtonsPanel = new JPanel(new GridLayout(3, 1));
 
     // Create a JButton to start a new game
-    // TODO: new game button calls the resetBoardPanel - make sure it restarts player board and keeps same symbol
     newGameButton = new JButton("New Game");
+    //store the size of the button
     newGameButton.setPreferredSize(new Dimension(100, 20));
-    //newGameButton.addActionListener(new NewGameButtonActionListener());
+    //call the disconnect action button after click so the other can be turned on
+    newGameButton.addActionListener(new NewGameButtonClickListener());
+    //add the button to frame
     optionsButtonsPanel.add(newGameButton);
-    //need to create a function or call restart boad to allow for nee game to be able to be started
 
-    // Create a JButton to quit the current game
-    // TODO: quit game button calls resetBoardPanel and leaves the server (call disconnect)
+    // Create a JButton to quit the current agme and leave server
     quitGameButton = new JButton("Quit Game");
+    //store the size of the buttob
     quitGameButton.setPreferredSize(new Dimension(100, 20));
-    //quitGameButton.addActionListener(new QuitGameButtonActionListener());
+    
+    quitGameButton.addActionListener(new QuitGameButtonClickListener());
     optionsButtonsPanel.add(quitGameButton);
     //class so when clicked it reset the board and you leave the server
 
@@ -156,17 +193,15 @@ private JPanel createRightPanel() {
     userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
     // Need to call a method from a different class to get the user's symbol
-    //TODO: have it so that its blank first and then sets symbol from the method in GameClient
-    userSymbolTextArea.setText(" X");
+    userSymbolTextArea.setText(String.valueOf(gameGUI.getSymbol()));
     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 80)));
-    // Maybe an if statement changing it to userSymbolTextArea.setText("O");
-    // if the method that sets user symbols already assigned player 1 X
 
-    // Add the user symbol text area to the right panel
     rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
+
+    
     return rightPanel;
 }
-
+//COMEBACK to display player with last move
 // Create a panel to display the last move
 private JPanel createLeftPanel() {
     JPanel leftPanel = new JPanel(new BorderLayout());
@@ -186,6 +221,7 @@ private JPanel createLeftPanel() {
     return leftPanel;
 }
 
+//ALL DONE
 //store properties for top of the panel
 private JPanel createTop(){
     //edit top half where the player symbol that they type X or O, The ip Address and the port get sent to the GameClient
@@ -205,7 +241,7 @@ private JPanel createTop(){
         topPanel.add(PortNum);
 
         Connect_Disconnect = new JButton("Connect");
-        //Connect_Disconnect.addActionListener(new connectAction()); //sere's part
+        Connect_Disconnect.addActionListener(new connectAction()); //sere's part
         topPanel.add(Connect_Disconnect);
 
         return topPanel;
@@ -242,81 +278,80 @@ private JPanel createTop(){
         return middlePanel;
     }
 
-    private JPanel createBottomPanel()
-    {
-        //adding instructions how to play the game at the bottom
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+//ALLDONE
+//store properties in the botton section of gui
+private JPanel createBottomPanel()
+{
+    //adding instructions how to play the game at the bottom
+    JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        JLabel howToLabel = new JLabel("How to Play: ");
-        bottomPanel.add(howToLabel);
-        HowTo = new JTextArea();
-        HowTo.setPreferredSize(new Dimension(700, 50));
-        bottomPanel.add(HowTo);
-        HowTo.setText("You will be randomly assigned a symbol: 'X' or 'O'.\n"
-        + "Click on one of the buttons on the board to make your move.\n"
-        + "To win, create a column, row, or diagonal pattern with your symbol before the other player can.\n"
-        + "A draw will only occur when the entire board is used up and neither player was able to create one of the patterns.");
-        HowTo.setEditable(false);
-        add(bottomPanel, BorderLayout.SOUTH);
+    JLabel howToLabel = new JLabel("How to Play: ");
+    bottomPanel.add(howToLabel);
+    HowTo = new JTextArea();
+    HowTo.setPreferredSize(new Dimension(700, 50));
+    bottomPanel.add(HowTo);
+    HowTo.setText("You will be randomly assigned a symbol: 'X' or 'O'.\n"
+    + "Click on one of the buttons on the board to make your move.\n"
+    + "To win, create a column, row, or diagonal pattern with your symbol before the other player can.\n"
+    + "A draw will only occur when the entire board is used up and neither player was able to create one of the patterns.");
+    HowTo.setEditable(false);
+    add(bottomPanel, BorderLayout.SOUTH);
 
-        return bottomPanel;
+    return bottomPanel;
+}
+
+//ALLDONE
+//does the action when you click the connect button
+private class connectAction implements ActionListener {
+    
+    public void actionPerformed(ActionEvent e) {
+        //get host
+        String host = IP_Address.getText();
+        //get port
+        int port = Integer.parseInt(PortNum.getText());
+        //sent it to clientnetwork to be able to run
+        gameGUI = new GameClient(host, port, GameGUI.this);
+        //try for error
+        try
+        {
+            //call checkConnect in ClientNetworking
+            if (gameGUI.connectToServer()) 
+            {
+                //change properties for button
+                GameGUI.this.Connect_Disconnect.removeActionListener(this);
+                GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
+                GameGUI.this.Connect_Disconnect.setText("Disconnect");
+
+                //then have the player assigned a random symbol
+                gameGUI.assignSymbol();
+
+                // Now you can access the player's symbol using gameGUI.getSymbol() or a similar method
+                JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Assigned", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            //when error but a try catch saying ipaddress doesn't exist
+            catch (NumberFormatException n) {
+                JOptionPane.showMessageDialog(GameGUI.this, "IP address number does not exist", " connection failed", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    //ALL DONE
+    //disconnect properties
+    private class disconnectAction implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            //change the propeties to button to disconnect
+            GameGUI.this.Connect_Disconnect.removeActionListener(this);
+            GameGUI.this.Connect_Disconnect.addActionListener(new connectAction());
+            GameGUI.this.Connect_Disconnect.setText("Connect");
+            //reset everything to empty
+            resetBoardPanel();
+            //call to disconnect from server
+            gameGUI.disconnect();
+        }
     }
 
-    //TODO : when player connects have them be randomly assigned 
-    private class connectAction implements ActionListener {
-    
-        public void actionPerformed(ActionEvent e) {
-            //get name
-            String symbol = PlaySymbol.getText();
-            //get host
-            String host = IP_Address.getText();
-            //get port
-            int port = Integer.parseInt(PortNum.getText());
-            //sent it to clientnetwork to be able to run
-            gameGUI = new GameClient(symbol, host, port, GameGUI.this);
-            //try for error
-            try
-            {
-                //call checkConnect in ClientNetworking
-                if (gameGUI.connectToServer() == true) 
-                {
-                    //change properties for button
-                    GameGUI.this.Connect_Disconnect.removeActionListener(this);
-                    GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
-                    GameGUI.this.Connect_Disconnect.setText("Disconnect");
-
-                    //then have the player assigned a random symbol
-                    gameGUI.assignSymbol();
-
-                    // Now you can access the player's symbol using gameGUI.getSymbol() or a similar method
-                    JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Assigned", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-                //when error but a try catch saying ipaddress doesn't exist
-                 catch (NumberFormatException n) {
-                    JOptionPane.showMessageDialog(GameGUI.this, "IP address number does not exist", " connection failed", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-        
-        //disconnect properties
-        private class disconnectAction implements ActionListener{
-            public void actionPerformed(ActionEvent e){
-                //change the propeties to button to disconnect
-                GameGUI.this.Connect_Disconnect.removeActionListener(this);
-                GameGUI.this.Connect_Disconnect.addActionListener(new connectAction());
-                GameGUI.this.Connect_Disconnect.setText("Connect");
-                //reset everything to empty
-                
-                //reset the boardPanel
-                resetBoardPanel();
-                gameGUI.disconnect();
-    
-            }
-        }
-
-
-        // new method to reset boardPanel
+    //ALLDONE FOR NOW
+    // new method to reset boardPanel
     private void resetBoardPanel() 
     {
         //somehow calls the private NewMove button so when you clik that too the game resets
@@ -328,33 +363,61 @@ private JPanel createTop(){
             }
         }
     }
+
     // new class for board button click listener
-    private class BoardButtonClickListener implements ActionListener
-    {
-        public void actionPerformed(ActionEvent e) 
-        {
-            JButton clickedButton = (JButton) e.getSource();
-            
-            // Remove the clicked button
-            //boardPanel.remove(clickedButton);
-            
-            // Refresh the layout
-            //boardPanel.revalidate();
-            //boardPanel.repaint();
+    private class BoardButtonClickListener implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+            if (playerTurn.isPlayer1Turn()) {
+                //determin the positoon of the clicked button on the game board and update its state
+                JButton clickedButton = (JButton) e.getSource();
+
+                //Find the clicked button position
+                int clickedRow = -1, clickedCol = -1;
+
+                //iterate through board to find the clicked button
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (boardButtons[i][j] == clickedButton) {
+                            clickedRow = i;
+                            clickedCol = j;
+                            break;
+                        }
+                    }
+                }
+                if (clickedRow != -1 && clickedCol != -1) {
+                    // Check if the clicked button is empty
+                    if (boardButtons[clickedRow][clickedCol].getText().isEmpty()) {
+                        // Update the button with the current player's symbol
+                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(gameGUI.getSymbol()));
+        
+                        // Disable the clicked button to prevent further clicks
+                        boardButtons[clickedRow][clickedCol].setEnabled(false);
+
+                        //send the move you just did
+                        //switch to new player
+                sendMove();
+                //updateBoardState);
+                playerTurn.switchTurn();
+                    }
+                }
+            }
+
         }
     }
-
-    public void updatePlayer(String player)
-    {
-        //change like chnge jBotton when the opp player make a moove
-        //used in GameClient
-
-        yourSymbolLabel.setText(player);
-
-    }
+        
 
 
-    public void receiveMove(String move){
+//update the player symbol
+public void updatePlayer(String player)
+{
+    yourSymbolLabel.setText(String.valueOf(player));
+}
+
+
+public void receiveMove(String move){
+    //in receieve move you are suppose the setthe botton the other person click to non clickable 
+    //then set it to te symbo of the other player
         //recieve the move from opp player
         //used in GameClient
 
@@ -364,20 +427,33 @@ private JPanel createTop(){
         int col = Integer.parseInt(coordinates[1]);
 
         // Update the board with the opponent's move
-        String opponentSymbol = gameGUI.getSymbol();
-        boardButtons[row][col].setText(symbol); // getSymbol is from GameClient why isnt it working?
+        String opponentSymbol = gameGUI.getSymbol(); // Use getSymbol to get the opponent's symbol
+        boardButtons[row][col].setText(String.valueOf(opponentSymbol));
+        boardButtons[row][col].setEnabled(false); // Disable the button
 
-        // Check if the game has ended
-        if (isWinner()) {  //isWinner from tictactoeboard.java
-            handleGameOver();
+        /// Check if the game has ended
+        if (tictactoeboard.isWinner(gameGUI.getSymbol()) || tictactoeboard.isDraw()) {
+
+            tictactoeboard.isWinner(gameGUI.getSymbol());
+            tictactoeboard.isDraw();
         } else {
             // Switch players
-            currentPlayer = opponent;
-            updatePlayer(opponent);
+            currentPlayer = gameGUI.getSymbol(); // Assuming you want to switch to the current player
+            updatePlayer(currentPlayer);
+    }
+}
+
+    //send the player a move
+    public void sendMove(){
+        //store the move that the onther player had, which is a symbol
+        String move = gameGUI.getSymbol();;
+
+        //make sure the move isn't empty
+        if (move != null) {
+            newPlayer.writeMessage(move);
         }
     }
-
-    public void sendMove(String Move){
+        /*
         //send yo new jButton        
         //used in GameClient
 
@@ -389,6 +465,9 @@ private JPanel createTop(){
             // Send the move string to the server
             OutputStream outputStream = socket.getOutputStream();
             PrintWriter printWriter = new PrintWriter(outputStream);
+            //create a string that store the move
+            //make sure in method that yo return a string
+            //print that string
             printWriter.println(move);
             printWriter.flush();
 
@@ -410,143 +489,109 @@ private JPanel createTop(){
             StateError("Connection error");
         }
     }
-
+*/
     public void StateError(String msg)
     {
         JOptionPane.showMessageDialog(null, msg, "Error!", JOptionPane.ERROR_MESSAGE);
     }
 
 
-    //ACTION LISTNERS FOR BUTTONS: 
+private class NewGameButtonClickListener implements ActionListener{
         
-    // Add event handlers for game board buttons
-        for (int i = 0; i < 3; i++) 
-        {
-            for (int j = 0; j < 3; j++) 
-            {
-                boardButtons[i][j].addActionListener(new ActionListener() 
-                {
-                    @Override
-                    public void actionPerformed(ActionEvent e) 
-                    {
-                        // Handle button click
-                        handleButtonClick(i, j);
-                    }
-                });
-            }
-        }
+    public void actionPerformed(ActionEvent e){
+        //restart the board
+        resetBoardPanel();
+        //reassgn symbol
+        gameGUI.assignSymbol();
+        JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Reassigned", JOptionPane.INFORMATION_MESSAGE);
+        //enable all button on the board
+        enableAllButtons();
+        // Reset turns when starting a new game
+        playerTurn.resetTurn(); 
 
-        // Add event handler for "New Game" button
-        newGameButton.addActionListener(new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                // Handle new game request
-                handleNewGameRequest();
-            }
-        });
 
-        // Add event handler for "Quit Game" button
-        quitGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle quit game request
-                handleQuitGameRequest();
-            }
-        });
+
+
+    // Add event handler for "New Game" button
+        
     }
+}
 
-    // Method to handle button clicks
-    private void handleButtonClick(int row, int col) 
-    {
-        if (boardButtons[row][col].isEnabled()) 
-        { // Check if cell is empty
-            // Update the board and send it to the server
-            gameClient.sendMove(row, col);
-
-            // Disable the clicked button to prevent further clicks
-            boardButtons[row][col].setEnabled(false);
+//allow for al the button that were previously disable for the to be able use
+private void enableAllButtons(){
+    // Enable buttons that were previously disabled due to user clicks
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            boardButtons[i][j].setEnabled(true);
         }
     }
-
-    private void disableAllButtons() 
-    {
-        for (int row = 0; row < 3; row++) 
-        {
-            for (int col = 0; col < 3; col++) 
-            {
-                if (boardButtons[row][col].isEnabled()) 
-                {
-                    boardButtons[row][col].setEnabled(false);
-                }
-            }
-        }
 }
 
 
-    // Method to handle new game request - idk if this works lol...
-    private void handleNewGameRequest() 
-    {
-        gameClient.sendNewGameRequest();
-    }
+//ALL DONE
+//store button action after you click the button
+private class QuitGameButtonClickListener implements ActionListener {
 
-    // Method to handle quit game request
-    private void handleQuitGameRequest() 
-    {
-        gameClient.sendQuitGameRequest();
-        System.exit(0); // Terminate the application
+    public void actionPerformed(ActionEvent e){
+        //change the properties when you click quitgamebutton
+        GameGUI.this.Connect_Disconnect.removeActionListener(this);
+        //reset everything to empty
+        resetBoardPanel();
+        //call to disconnect from server
+        gameGUI.disconnect();
+        
     }
+}
+ 
+/* 
+//disable the button
+private void disableAllButtons() 
+{
+    for (int row = 0; row < 3; row++) 
+    {
+        for (int col = 0; col < 3; col++) 
+        {
+            if (boardButtons[row][col].isEnabled()) 
+            {
+                boardButtons[row][col].setEnabled(false);
+            }
+        }
+    }
+}*/
+
+
 
     // Method to handle receiving updated board state from the server
-    public void updateBoardState(char[][] updatedBoard) 
+    public void updateBoardState(String[][] board) 
     {
         // Update the game board buttons based on the received board state
         for (int i = 0; i < 3; i++) 
         {
             for (int j = 0; j < 3; j++) 
             {
-                boardButtons[i][j].setText(String.valueOf(updatedBoard[i][j]));
+                boardButtons[i][j].setText(currentPlayer);
             }
         }
 
         // Enable buttons that were previously disabled due to user clicks
-        for (int i = 0; i < 3; i++) 
-        {
-            for (int j = 0; j < 3; j++) 
-            {
-                boardButtons[i][j].setEnabled(true);
-            }
-        }
-
-        // Check for a winner or draw
-        if (tictactoeboard.isWinner(gameClient.getSymbol())) 
-        {
-            displayWinMessage();
-            disableAllButtons();
-        } else if (tictactoeboard.isDraw()) 
-        {
-            displayDrawMessage();
-            disableAllButtons();
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            boardButtons[i][j].setEnabled(true);
         }
     }
 
-    // Method to display a congratulatory message for the winner
-    private void displayWinMessage() {
-        JOptionPane.showMessageDialog(this, "Congratulations, you won!");
-    }
+    
+    tictactoeboard.isWinner(gameGUI.getSymbol());
+    tictactoeboard.isDraw();
+        
+}
 
-    // Method to display a message indicating a draw
-    private void displayDrawMessage() {
-        JOptionPane.showMessageDialog(this, "It's a draw!");
-    }
-
+//ALLDONE
     public static void main(String[] args) 
     {
-        SwingUtilities.invokeLater(() -> {
-            GameGUI gameGUI = new GameGUI();
-            gameGUI.setVisible(true);
-        });
+        //main methd for running the JFram
+        GameGUI gameGUI = new GameGUI();
+        gameGUI.setVisible(true);
     }
 }
 

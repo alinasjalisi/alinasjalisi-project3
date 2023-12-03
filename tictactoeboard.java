@@ -1,33 +1,33 @@
 //logic for constituting a win/draw/loss
-// TODO: add pop ups for when someone wins or draws
-
 import javax.swing.JOptionPane;
 
 public class tictactoeboard {
 
-    // Creates a 2D character array to represent the 3x3 board
-    private final char[][] board = new char[3][3];
+    private GameGUI player;
+
+    // Creates a 2D Stringacter array to represent the 3x3 board
+    private static String[][] board = new String[3][3];
 
     // Constructor that calls initializeboard() method to create a fresh board
     public tictactoeboard() 
     {
-        //board = new char[3][3]; 
+        //board = new String[3][3]; 
         initializeBoard();
     }
 
-    // Initialize the board with '-' symbols in every cell
+    // Initialize the board with "-" symbols in every cell
     private void initializeBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                board[i][j] = '-';
+                board[i][j] = "-";
             }
         }
     }
 
     // Method to update the board with the specified symbol at the given row and column
-    public void updateBoard(int row, int col, char symbol) {
+    public void updateBoard(int row, int col, String symbol) {
         // Check if the cell is already occupied
-        if (board[row][col] == '-') {
+        if (board[row][col] == "-") {
             // Update the cell with the specified symbol
             board[row][col] = symbol;
         } else {
@@ -37,7 +37,7 @@ public class tictactoeboard {
     }
 
     // Method to check if the specified symbol has won the game
-    public boolean isWinner(char symbol) {
+    public static boolean isWinner(String symbol) {
         //evaluates if any of the checkRows, checkColumns, or checkDiagonals methods are true. 
             //if even one of them is true, then isWinner returns true (as perscribed in the 3 methods below) if all of them are false, then isWinner returns false (as perscribed in the 3 methods below)
 
@@ -51,7 +51,7 @@ public class tictactoeboard {
     }
 
     // Check if the symbol has won in any row
-    private boolean checkRows(char symbol) {
+    private static boolean checkRows(String symbol) {
         for (int i = 0; i < 3; i++) {
             if (board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) {
                 return true;
@@ -62,7 +62,7 @@ public class tictactoeboard {
     }
 
     // Check if the symbol has won in any column
-    private boolean checkColumns(char symbol) {
+    private static boolean checkColumns(String symbol) {
         for (int i = 0; i < 3; i++) {
             if (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol) {
                 return true;
@@ -73,7 +73,7 @@ public class tictactoeboard {
     }
 
     // Check if the symbol has won in either forward or backward diagonal / or \
-    private boolean checkDiagonals(char symbol) {
+    private static boolean checkDiagonals(String symbol) {
         for (int i = 0; i < 3; i++) {
         //checking for forward diagonal \
         if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol){
@@ -91,11 +91,11 @@ public class tictactoeboard {
     //NEED TO WORK ON THIS METHOD BC...
         //doesn't evaluate if draw happens even when not all cells are full 
         //doesn't have any connection to 3 above methods, do we only need to call isDraw when all 3 have failed? 
-        public boolean isDraw() 
+        public static boolean isDraw() 
         {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    if (board[i][j] == '-') {
+                    if (board[i][j] == "-") {
                         return false;
                     }
                 }
@@ -106,7 +106,7 @@ public class tictactoeboard {
         
 
     //relays the current board state when called
-    public char[][] getBoard() {
+    public static String[][] getBoard() {
         return board;
     }
 }
