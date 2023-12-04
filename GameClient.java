@@ -29,8 +29,6 @@ public class GameClient{
     private final int serverport;
     //store the gui of the client
     private GameGUI gameGUI;
-    //take in the client move
-    //private String playerMove;
 
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){

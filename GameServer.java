@@ -7,6 +7,7 @@ import java.util.List;
 public class GameServer implements Runnable {
     private ServerSocket serverSock;
     private List<GameClient> connectedClients;
+    private GameGUI gameGUI;
 
     public GameServer(int serverPort) {
         try {
@@ -27,16 +28,16 @@ public class GameServer implements Runnable {
 
                 // Assuming GameClient constructor requires symbol, host, port, and GameGUI.this
                 GameClient client = new GameClient(
-                        "X",  // Default symbol for now, adjust as needed
+                          // Default symbol for now, adjust as needed
                         "localhost",   // Example host, adjust as needed
                         1234,  // Example port, adjust as needed
-                        null  // Example GameGUI.this, adjust as needed
+                        gameGUI  // Example GameGUI.this, adjust as needed
                 );
 
                 connectedClients.add(client);
 
                 // Start a new thread to handle the client
-                Thread clientThread = new Thread();
+                Thread clientThread = new Thread(client);
                 clientThread.start();
             }
         } catch (IOException e) {

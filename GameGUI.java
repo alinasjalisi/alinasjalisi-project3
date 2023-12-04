@@ -29,8 +29,6 @@ public class GameGUI extends JFrame
     private JButton Connect_Disconnect;
     //text for has the last move
     private JTextArea LastMOVE;
-    //when play wants to play a new game
-    //private JButton New_Game;
     //used to connect GameClient
     private GameClient gameGUI;
     //label for option player can do on the right side of the GUI
@@ -45,13 +43,10 @@ public class GameGUI extends JFrame
     private JTextArea userSymbolTextArea;
     //store the 3x3 button
     private JButton[][] boardButtons;
-    
     //used for cient networking
     private GameClient newPlayer;
-
     //store to keep track of player turn
     private PlayerTurn playerTurn;
-
     //stor whos the current player
     private String currentPlayer;
 
@@ -152,12 +147,17 @@ public class GameGUI extends JFrame
 //ALL DONE
 //store properties for the right part of the panel
 private JPanel createRightPanel() {
+    
+
     JPanel rightPanel = new JPanel(new GridLayout(4, 1));
+    
 
     // Create a JLabel for the "Options" section
     optionsLabel = new JLabel("Options:");
     optionsLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
     rightPanel.add(optionsLabel, BorderLayout.NORTH);
+
+      
 
     // Create a JPanel for buttons and labels
     JPanel optionsButtonsPanel = new JPanel(new GridLayout(3, 1));
@@ -177,6 +177,7 @@ private JPanel createRightPanel() {
     quitGameButton.setPreferredSize(new Dimension(100, 20));
     
     quitGameButton.addActionListener(new QuitGameButtonClickListener());
+
     optionsButtonsPanel.add(quitGameButton);
     //class so when clicked it reset the board and you leave the server
 
@@ -193,10 +194,16 @@ private JPanel createRightPanel() {
     userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
     // Need to call a method from a different class to get the user's symbol
-    userSymbolTextArea.setText(String.valueOf(gameGUI.getSymbol()));
+    userSymbolTextArea.setText(String.valueOf( "X" ) /*gameGUI.getSymbol())*/);
     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 80)));
 
     rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
+
+    if (gameGUI == null) {
+        // Handle the case where gameGUI is null, e.g., return or show an error message
+        // For now, just return an empty panel
+        return rightPanel;
+    }
 
     
     return rightPanel;
@@ -253,13 +260,15 @@ private JPanel createTop(){
         //add that when you click a button it get remove and reveal the empty behind
         //need to add hash in the backgroup as wll as when you remove the button
         //your specific symbol appear in the backgroud
+
+        
         JPanel middlePanel = new JPanel(new BorderLayout());
 
         JTextArea statusTextArea = new JTextArea();
         statusTextArea.setEditable(false);
         statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 18)); // Adjusted font size
 
-        statusTextArea.setText("                                                   Player X's turn");
+        statusTextArea.setText("                                                   Player's  " + "X" /*gameGUI.getSymbol()*/+ " turn");
         middlePanel.add(statusTextArea, BorderLayout.NORTH);
 
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
@@ -274,7 +283,7 @@ private JPanel createTop(){
             }
         }
         middlePanel.add(boardPanel, BorderLayout.CENTER);
-
+        
         return middlePanel;
     }
 
@@ -394,20 +403,18 @@ private class connectAction implements ActionListener {
                         // Disable the clicked button to prevent further clicks
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
 
-                        //send the move you just did
                         //switch to new player
-                sendMove();
-                //updateBoardState);
-                playerTurn.switchTurn();
+                        sendMove();
+                        //updateBoardState);
+                        playerTurn.switchTurn();
                     }
                 }
             }
-
         }
     }
         
 
-
+//comeback
 //update the player symbol
 public void updatePlayer(String player)
 {
@@ -453,43 +460,8 @@ public void receiveMove(String move){
             newPlayer.writeMessage(move);
         }
     }
-        /*
-        //send yo new jButton        
-        //used in GameClient
 
-
-        try {
-            // Get the socket connected to the server
-            Socket socket = getServerSocket();
-
-            // Send the move string to the server
-            OutputStream outputStream = socket.getOutputStream();
-            PrintWriter printWriter = new PrintWriter(outputStream);
-            //create a string that store the move
-            //make sure in method that yo return a string
-            //print that string
-            printWriter.println(move);
-            printWriter.flush();
-
-            // Wait for the server's response
-            InputStream inputStream = socket.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String response = bufferedReader.readLine();
-
-            // Handle the server's response
-            if (response.equals("MOVE_ACCEPTED")) {
-                // The move was accepted, proceed with updating the board
-                boardButtons[row][col].setText(opponentSymbol);
-            } else {
-                // The move was rejected, display an error message
-                StateError("Invalid move");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            StateError("Connection error");
-        }
-    }
-*/
+    //error
     public void StateError(String msg)
     {
         JOptionPane.showMessageDialog(null, msg, "Error!", JOptionPane.ERROR_MESSAGE);
