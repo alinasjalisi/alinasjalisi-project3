@@ -49,6 +49,13 @@ public class GameGUI extends JFrame
     private PlayerTurn playerTurn;
     //stor whos the current player
     private String currentPlayer;
+    //store instance of last move
+    private LastMove lastMove;
+
+    private JLabel opponent;
+
+    private int clickedRow = -1;
+    private int clickedCol = -1;
 
 
     //used to initialize an new instance of GameGui class
@@ -194,21 +201,23 @@ private JPanel createRightPanel() {
     userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
     // Need to call a method from a different class to get the user's symbol
-    userSymbolTextArea.setText(String.valueOf( "X" ) /*gameGUI.getSymbol())*/);
-    userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 80)));
+    userSymbolTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 100));
+    rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
+
+    if(gameGUI != null){
+    userSymbolTextArea.setText(String.valueOf( gameGUI.getSymbol() ) /*gameGUI.getSymbol())*/);
+    userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 300)));
+
+    if(gameGUI.assignSymbol() == true){
+        userSymbolTextArea = new JTextArea(gameGUI.getSymbol());
+    }
+    }
 
     rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
 
-    if (gameGUI == null) {
-        // Handle the case where gameGUI is null, e.g., return or show an error message
-        // For now, just return an empty panel
-        return rightPanel;
-    }
-
-    
     return rightPanel;
 }
-//COMEBACK to display player with last move
+//Should be all done
 // Create a panel to display the last move
 private JPanel createLeftPanel() {
     JPanel leftPanel = new JPanel(new BorderLayout());
@@ -222,8 +231,6 @@ private JPanel createLeftPanel() {
     LastMOVE.setEditable(false);
     LastMOVE.setPreferredSize(new Dimension(150, 100));
     leftPanel.add(LastMOVE, BorderLayout.CENTER);
-    //new to add text that diaply the player symbol who has the las move as well as what the 
-    //last possible thing a player can click
 
     return leftPanel;
 }
@@ -255,6 +262,7 @@ private JPanel createTop(){
 
     }
 
+    //NEEDS FIXED
     private JPanel createMiddlePanel(){
 
         //add that when you click a button it get remove and reveal the empty behind
@@ -268,7 +276,12 @@ private JPanel createTop(){
         statusTextArea.setEditable(false);
         statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 18)); // Adjusted font size
 
-        statusTextArea.setText("                                                   Player's  " + "X" /*gameGUI.getSymbol()*/+ " turn");
+        if(gameGUI == null){
+            statusTextArea.setText("                                                   Player's  " + " " + " turn");
+
+        }else{
+        statusTextArea.setText("                                                   Player's  " + String.valueOf(gameGUI.getSymbol())+ " turn");
+        }
         middlePanel.add(statusTextArea, BorderLayout.NORTH);
 
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
@@ -334,8 +347,13 @@ private class connectAction implements ActionListener {
                 //then have the player assigned a random symbol
                 gameGUI.assignSymbol();
 
+                String assignedSymbol = gameGUI.getSymbol();
+
                 // Now you can access the player's symbol using gameGUI.getSymbol() or a similar method
+                //NEEDS FIXED
                 JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Assigned", JOptionPane.INFORMATION_MESSAGE);
+
+                updatePlayerSymbol(assignedSymbol);
                 }
             }
             //when error but a try catch saying ipaddress doesn't exist
@@ -376,13 +394,25 @@ private class connectAction implements ActionListener {
     // new class for board button click listener
     private class BoardButtonClickListener implements ActionListener{
 
+
+        //getter for row and colo
+
+        public int getClickedRow() {
+            return clickedRow;
+        }
+    
+        public int getClickedCol() {
+            return clickedCol;
+        }
+
         public void actionPerformed(ActionEvent e) {
             if (playerTurn.isPlayer1Turn()) {
                 //determin the positoon of the clicked button on the game board and update its state
                 JButton clickedButton = (JButton) e.getSource();
 
                 //Find the clicked button position
-                int clickedRow = -1, clickedCol = -1;
+                clickedRow = -1;
+                clickedCol = -1;
 
                 //iterate through board to find the clicked button
                 for (int i = 0; i < 3; i++) {
@@ -404,9 +434,15 @@ private class connectAction implements ActionListener {
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
 
                         //switch to new player
-                        sendMove();
-                        //updateBoardState);
                         playerTurn.switchTurn();
+
+                        if (playerTurn.getTurnCount() == 8) {
+                            // Display the "Last Move" since there is exactly one move left
+                            String lastMoveDescription = "Last Move: Player " + gameGUI.getSymbol() + " at (" + clickedRow + ", " + clickedCol + ")";
+                            LastMOVE.setText(lastMoveDescription);
+                        }
+
+                        sendMove();
                     }
                 }
             }
@@ -418,7 +454,19 @@ private class connectAction implements ActionListener {
 //update the player symbol
 public void updatePlayer(String player)
 {
-    yourSymbolLabel.setText(String.valueOf(player));
+    yourSymbolLabel.setText(player);
+}
+
+//update the player symbol on the GUI
+public void updatePlayerSymbol(String symbol){
+    //Updatethe gui to display the assigned symbol
+    // Assuming you have two players (player 1 and player 2)
+    if (symbol.equals("X")) {
+        userSymbolTextArea.setText("X");
+    } else if (symbol.equals("O")) {
+        userSymbolTextArea.setText("O");
+    }
+    // You can customize this based on the actual names or labels you want to display
 }
 
 
@@ -453,11 +501,9 @@ public void receiveMove(String move){
     //send the player a move
     public void sendMove(){
         //store the move that the onther player had, which is a symbol
-        String move = gameGUI.getSymbol();;
-
-        //make sure the move isn't empty
+        String move = clickedRow + "," + clickedCol;
         if (move != null) {
-            newPlayer.writeMessage(move);
+            gameGUI.sendMove(move);
         }
     }
 
@@ -475,6 +521,8 @@ private class NewGameButtonClickListener implements ActionListener{
         resetBoardPanel();
         //reassgn symbol
         gameGUI.assignSymbol();
+        //updat the gui to siplay the new symbol
+        updatePlayerSymbol(gameGUI.getSymbol());
         JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Reassigned", JOptionPane.INFORMATION_MESSAGE);
         //enable all button on the board
         enableAllButtons();
@@ -509,31 +557,15 @@ private class QuitGameButtonClickListener implements ActionListener {
         GameGUI.this.Connect_Disconnect.removeActionListener(this);
         //reset everything to empty
         resetBoardPanel();
+        enableAllButtons();
         //call to disconnect from server
         gameGUI.disconnect();
+
+        userSymbolTextArea.setText (" ");
         
     }
 }
- 
-/* 
-//disable the button
-private void disableAllButtons() 
-{
-    for (int row = 0; row < 3; row++) 
-    {
-        for (int col = 0; col < 3; col++) 
-        {
-            if (boardButtons[row][col].isEnabled()) 
-            {
-                boardButtons[row][col].setEnabled(false);
-            }
-        }
-    }
-}*/
-
-
-
-    // Method to handle receiving updated board state from the server
+     // Method to handle receiving updated board state from the server
     public void updateBoardState(String[][] board) 
     {
         // Update the game board buttons based on the received board state

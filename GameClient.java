@@ -80,16 +80,15 @@ public class GameClient{
     }
 
     // Assigns a random symbol to the player once connected, either X or O
-    public void assignSymbol() 
+    public boolean assignSymbol() 
     {
         // Keep generating a random symbol until an unassigned one is found
-        do 
-        {
-            //create a new instance of the random class that can be used to generate random value
-            Random random = new Random();
-            //generate a random boolean and assign x or o
-            this.symbol = (random.nextBoolean()) ? "X" : "O";
-        }while (!isSymbolAvailable(this.symbol)); // Check if the symbol  
+        do {
+        Random random = new Random();
+        this.symbol = (random.nextBoolean()) ? "X" : "O";
+    } while (!isSymbolAvailable(this.symbol));
+    assignedSymbols.add(this.symbol); // Add the assigned symbol to the set
+    return true;
     }
 
     // Check if the symbol is available (not assigned to any player)

@@ -4,18 +4,26 @@ public class PlayerTurn {
 
     private boolean isPlayer1Turn;
     private JButton[][] boardButtons;
+    private int turnCount;
 
     public PlayerTurn(JButton[][] boardButtons) {
         this.isPlayer1Turn = true;
+        this.turnCount = 0;
+        this.boardButtons = boardButtons;
     }
 
     public void switchTurn() {
         isPlayer1Turn = !isPlayer1Turn;
+        turnCount++;
         updateButtonAvailability();
     }
 
     public boolean isPlayer1Turn() {
         return isPlayer1Turn;
+    }
+
+    public int getTurnCount(){
+        return turnCount;
     }
 
     public void resetTurn() {
