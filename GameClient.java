@@ -80,6 +80,8 @@ public class GameClient{
     }
 
     // Assigns a random symbol to the player once connected, either X or O
+
+    //HARD CODE FIRST PERSON TO CONNECT
     public boolean assignSymbol() 
     {
         // Keep generating a random symbol until an unassigned one is found

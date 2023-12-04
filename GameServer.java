@@ -12,6 +12,8 @@ public class GameServer implements Runnable {
     private List<GameClient> connectedClients;
     private List<String> upcomingMove;
 
+    private int playerCount = 0;
+
     public GameServer(int serverPort) {
         try {
             serverSock = new ServerSocket(serverPort);
@@ -31,8 +33,14 @@ public class GameServer implements Runnable {
 
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
-            this.symbol = generateRandomSymbol();
-            addPlayer(this);
+           if(playerCount == 0){
+            this.symbol = "X";
+           }
+           if(playerCount == 1){
+            this.symbol = "O";
+           }
+           playerCount++;
+           addPlayer(this);
         }
 
         @Override
