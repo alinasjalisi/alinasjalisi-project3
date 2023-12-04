@@ -470,31 +470,40 @@ public void updatePlayerSymbol(String symbol){
 }
 
 
-public void receiveMove(String move){
-    //in receieve move you are suppose the setthe botton the other person click to non clickable 
-    //then set it to te symbo of the other player
-        //recieve the move from opp player
-        //used in GameClient
-
-        // Split the move string into coordinates (row, column)
-        String[] coordinates = move.split(",");
-        int row = Integer.parseInt(coordinates[0]);
-        int col = Integer.parseInt(coordinates[1]);
-
-        // Update the board with the opponent's move
-        String opponentSymbol = gameGUI.getSymbol(); // Use getSymbol to get the opponent's symbol
-        boardButtons[row][col].setText(String.valueOf(opponentSymbol));
-        boardButtons[row][col].setEnabled(false); // Disable the button
-
-        /// Check if the game has ended
-        if (tictactoeboard.isWinner(gameGUI.getSymbol()) || tictactoeboard.isDraw()) {
-
-            tictactoeboard.isWinner(gameGUI.getSymbol());
-            tictactoeboard.isDraw();
+public void receiveMove(String move) {
+    try {
+        // Check if the move is in the "SYMBOL:" format
+        if (move.startsWith("SYMBOL:")) {
+            // Handle the SYMBOL message, for example, update the player symbol
+            String symbol = move.substring("SYMBOL:".length()).trim();
+            updatePlayer(symbol);
         } else {
-            // Switch players
-            currentPlayer = gameGUI.getSymbol(); // Assuming you want to switch to the current player
-            updatePlayer(currentPlayer);
+            // Split the move string into coordinates (row, column)
+            String[] coordinates = move.split(",");
+            int row = Integer.parseInt(coordinates[0]);
+            int col = Integer.parseInt(coordinates[1]);
+
+            // Update the board with the opponent's move
+            String opponentSymbol = gameGUI.getSymbol(); // Use getSymbol to get the opponent's symbol
+            boardButtons[row][col].setText(String.valueOf(opponentSymbol));
+            boardButtons[row][col].setEnabled(false); // Disable the button
+
+            // Check if the game has ended
+            if (tictactoeboard.isWinner(opponentSymbol)) {
+                // Handle the case where the opponent wins
+                System.out.println("Opponent Wins!");
+            } else if (tictactoeboard.isDraw()) {
+                // Handle the case where the game is a draw
+                System.out.println("It's a Draw!");
+            } else {
+                // Switch players
+                currentPlayer = gameGUI.getSymbol(); // Assuming you want to switch to the current player
+                updatePlayer(currentPlayer);
+            }
+        }
+    } catch (NumberFormatException e) {
+        // Handle the case where the move string is not in the expected format
+        e.printStackTrace(); // Log the exception or handle it appropriately
     }
 }
 

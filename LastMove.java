@@ -1,5 +1,4 @@
 import java.lang.reflect.Method;
-
 import javax.swing.*;
 
 public class LastMove{

@@ -42,40 +42,43 @@ public class GameServer implements Runnable {
                 receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
 
                 // Send the assigned symbol to the client
-                send.println("SYMBOL " + symbol);
+                send.println("SYMBOL:");
 
                 while (true) {
                     String move = receive.readLine();
                     if (move == null) {
                         removePlayer(this);
                         dequeueAll();
-                        //if nothing break
                         break;
                     }
-                    //write message back
-                    send.println(move);
-                    send.flush();
+
+                    // Broadcast the move to all connected clients
+                    synchronized (secret) {
+                        upcomingMove.add(move);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                //insure to be executed
                 try {
-                    //close everything
                     send.close();
                     receive.close();
                     playerSocket.close();
                     removePlayer(this);
                     System.out.println("Connection lost:" + playerSocket.getRemoteSocketAddress());
                 } catch (IOException e) {
-                    //error occured
                     e.printStackTrace();
                 }
             }
         }
 
         public void sendMove(String move) {
+            // Send a move to the client
             send.println(move);
+        }
+
+        public void sendSymbol(String symbol) {
+            send.println("SYMBOL");
         }
     }
 
@@ -119,7 +122,8 @@ public class GameServer implements Runnable {
             try {
                 Socket player = serverSock.accept();
                 System.out.println("New Connection: " + player.getRemoteSocketAddress());
-                new GameClient(player).start();
+                GameClient client = new GameClient(player);
+                client.start(); // Start the GameClient thread
             } catch (IOException e) {
                 e.printStackTrace();
             }
