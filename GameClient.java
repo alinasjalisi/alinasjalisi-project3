@@ -29,12 +29,19 @@ public class GameClient{
     private final int serverport;
     //store the gui of the client
     private GameGUI gameGUI;
+    //store server properties
+    public GameServer server;
+
+    public int playerCount = 0 ;
+
 
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){
         this.serverAddress = serverAddress;
         this.serverport = serverport;
         this.gameGUI = gameGUI;
+        //this.server = server;
+        //playerCount++;
     }
 
     //inner class repesenting the thread for reading move
@@ -45,23 +52,23 @@ public class GameClient{
         public void run() {
             try {
                 // Initialize resources (send, receive, etc.)
-                while (true) {
+                while (isConnected()) {
+                    //assign symbol in thread, say you symbol x or 0
+                    if(line)
+
                     //create variable that store incoming move
                     String receivedMoveString = read.readLine();
+                    //use read for assigning synbil
+                    
 
                     if (receivedMoveString == null) {
                         //not correctly connected to the server
                         check = false;
                         disconnect();
                     }
-
-                        if (check) {
-                            //if conected to the server
-                            //recieve the incoming move
                             gameGUI.receiveMove(receivedMoveString);
                             //update the player player on both side
                             gameGUI.updatePlayer(receivedMoveString);
-                        }
                     }
                 } catch (IOException e) {
                     if (isConnected()) {
@@ -72,36 +79,45 @@ public class GameClient{
             }
         }
 
+        
     //used for write a move and connect to the server
-    public void sendMove(String move){
+    public synchronized void sendMove(String move){
         if(isConnected()){
             write.println(move);
+            write.flush();
         }
+
     }
 
     // Assigns a random symbol to the player once connected, either X or O
 
     //HARD CODE FIRST PERSON TO CONNECT
+    //having a hardtime getting the playcount from the server
     public boolean assignSymbol() 
     {
-        // Keep generating a random symbol until an unassigned one is found
-        do {
-        Random random = new Random();
-        this.symbol = (random.nextBoolean()) ? "X" : "O";
-    } while (!isSymbolAvailable(this.symbol));
-    assignedSymbols.add(this.symbol); // Add the assigned symbol to the set
-    return true;
+        /*int count = server.playCount();
+        System.out.println("Count: " + count);
+        if(count == 0){
+            this.symbol = "X";
+            //count++;
+            System.out.println("Game client" + this.symbol);
+        }
+        else{
+            this.symbol = "O";
+            System.out.println("Game client" + this.symbol);
+
+        }
+        */
+        this.symbol = symbol;
+        return true;
     }
 
-    // Check if the symbol is available (not assigned to any player)
-    private boolean isSymbolAvailable(String symbol) {
-        return !assignedSymbols.contains(symbol);
-    }
+    
 
     //getter function
     public String getSymbol() 
     {
-        return symbol;
+        return this.symbol;
     }
 
     public void writeMessage(String message) {
@@ -110,7 +126,9 @@ public class GameClient{
             write.println(message);
         }
     }
-        
+    
+    //vommunicate with the server 
+    //public void ClientNetworking
     //add reading thread and fix boolean too
     //check if player is connected to server and used in GameGui
     public boolean connectToServer() {

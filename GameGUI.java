@@ -52,6 +52,8 @@ public class GameGUI extends JFrame
     //store instance of last move
     private LastMove lastMove;
 
+    private GameServer server;
+
     private JLabel opponent;
 
     private int clickedRow = -1;
@@ -71,6 +73,7 @@ public class GameGUI extends JFrame
     //used for initializing and orgarning the physical stuff
     private void startGameGUI()
     {
+        //server = new GameServer(0);
         //initilize in game gui
         playerTurn = new PlayerTurn(boardButtons);
 
@@ -353,8 +356,8 @@ private class connectAction implements ActionListener {
                 //NEEDS FIXED
                 JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Assigned", JOptionPane.INFORMATION_MESSAGE);
 
-                updatePlayerSymbol(assignedSymbol);
-                }
+                updatePlayerSymbol(gameGUI.getSymbol());
+            }
             }
             //when error but a try catch saying ipaddress doesn't exist
             catch (NumberFormatException n) {
@@ -470,7 +473,7 @@ public void updatePlayerSymbol(String symbol){
 }
 
 
-public void receiveMove(String move) {
+public synchronized void receiveMove(String move) {
     try {
         // Check if the move is in the "SYMBOL:" format
         if (move.startsWith("SYMBOL:")) {
@@ -508,7 +511,8 @@ public void receiveMove(String move) {
 }
 
     //send the player a move
-    public void sendMove(){
+    public synchronized void sendMove(){
+        //
         //store the move that the onther player had, which is a symbol
         String move = clickedRow + "," + clickedCol;
         if (move != null) {

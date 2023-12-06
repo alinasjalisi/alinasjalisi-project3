@@ -20,7 +20,7 @@ public class LastMove{
     //method that set the last move
     public void setLastMove(String symbol, int row, int col ){
         this.playerSymbol = symbol;
-        this.lastMoveCol = row;
+        this.lastMoveRow = row;
         this.lastMoveCol = col;
     }
 

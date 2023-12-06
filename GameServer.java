@@ -12,7 +12,7 @@ public class GameServer implements Runnable {
     private List<GameClient> connectedClients;
     private List<String> upcomingMove;
 
-    private int playerCount = 0;
+    public int playerCount = 0;
 
     public GameServer(int serverPort) {
         try {
@@ -23,6 +23,8 @@ public class GameServer implements Runnable {
             System.err.println("Cannot establish server socket");
             System.exit(1);
         }
+
+        
     }
 
     public class GameClient extends Thread {
@@ -31,16 +33,21 @@ public class GameServer implements Runnable {
         private BufferedReader receive;
         private String symbol;
 
+        //keep track of the client added
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
+
            if(playerCount == 0){
             this.symbol = "X";
+            System.out.println(this.symbol);
            }
-           if(playerCount == 1){
+           else{
+            
             this.symbol = "O";
+            System.out.println(this.symbol);
            }
-           playerCount++;
            addPlayer(this);
+           System.out.println(connectedClients.size());
         }
 
         @Override
@@ -50,20 +57,21 @@ public class GameServer implements Runnable {
                 receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
 
                 // Send the assigned symbol to the client
-                send.println("SYMBOL:");
+                send.println("SYMBOL:" + this.symbol);
+                //when client connect you just send whatever
 
+                //listen for a move
                 while (true) {
                     String move = receive.readLine();
                     if (move == null) {
                         removePlayer(this);
+                        enqueueMove(move);
                         dequeueAll();
                         break;
                     }
 
                     // Broadcast the move to all connected clients
-                    synchronized (secret) {
-                        upcomingMove.add(move);
-                    }
+                    upcomingMove.add(move);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -80,29 +88,23 @@ public class GameServer implements Runnable {
             }
         }
 
-        public void sendMove(String move) {
+        public synchronized void sendMove(String move) {
             // Send a move to the client
             send.println(move);
         }
 
-        public void sendSymbol(String symbol) {
+        public synchronized void sendSymbol(String symbol) {
             send.println("SYMBOL");
         }
     }
 
-    private String generateRandomSymbol() {
-        Random random = new Random();
-        return random.nextBoolean() ? "X" : "O";
-    }
-
+    //take in all teh message
     public synchronized void enqueueMove(String move) {
-        synchronized (secret) {
             upcomingMove.add(move);
-        }
     }
 
-    private void dequeueAll() {
-        synchronized (secret) {
+    //display all the message
+    private synchronized void dequeueAll() {
             List<String> moves = new ArrayList<>(upcomingMove);
             upcomingMove.clear();
             for (GameClient player : connectedClients) {
@@ -110,19 +112,23 @@ public class GameServer implements Runnable {
                     player.sendMove(move);
                 }
             }
-        }
     }
 
-    public void addPlayer(GameClient player) {
-        synchronized (secret) {
+    public synchronized void addPlayer(GameClient player) {
             connectedClients.add(player);
-        }
+            playerCount++;
+            System.out.println("inc. playercount : " + playerCount);
     }
 
-    public void removePlayer(GameClient player) {
-        synchronized (secret) {
+    public synchronized void removePlayer(GameClient player) {
             connectedClients.remove(player);
-        }
+        
+    }
+
+    public synchronized int playCount(){
+      //playerCount = connectedClients.size();
+      System.out.println("get player count: " + playerCount);
+        return playerCount;
     }
 
     public void serve() {
