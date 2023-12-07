@@ -19,98 +19,105 @@ public class GameClient{
     private Socket socket;
     //check that the user is correctly connect to the server
     private boolean check = false;
-    //store the player symbol
-    private String symbol;
-    //keep track of symbol that have been assigned to payers to ensure that eah symbol is unique
-    private static final Set<String> assignedSymbols = new HashSet<>();
     //store the ipaddress
     private final String serverAddress;
     //store the port number
     private final int serverport;
     //store the gui of the client
     private GameGUI gameGUI;
+    //store server properties
+    public GameServer server;
+
 
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){
         this.serverAddress = serverAddress;
         this.serverport = serverport;
         this.gameGUI = gameGUI;
+        
     }
 
     //inner class repesenting the thread for reading move
     private class ReadingThread extends Thread{
         //store the play symbol
-        //protected String move; 
+        //protected String msg; 
         //fuction to run thread
         public void run() {
             try {
                 // Initialize resources (send, receive, etc.)
-                while (true) {
-                    //create variable that store incoming move
-                    String receivedMoveString = read.readLine();
+                while (isConnected()) {
+                    
 
-                    if (receivedMoveString == null) {
+                    //create variable that store incoming message being passed in the server
+                    String msg = read.readLine();
+                    System.out.println(msg);
+                    //use read for assigning synbil
+
+                    //if msg == get assign the symbol x,tel gui your symbol is x
+                    if (msg.equals("SYMBOL X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+                    //if msg == get assigned the symbol y, you tell gui you symbol is o
+                    if (msg.equals("SYMBOL O")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+
+                    // if msg == an update fromboard in oppent, call the receiveMove method from gameGui
+                    if (msg.equals("X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+                    //if msg == a click button that want to start a new game, communite that you are starting new game
+                    if (msg.equals("O")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+                    //if msg == a click button that want to start a quit button, communite that you are starting new game
+                    if (msg.equals("Quit_Button")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+                    //detect is there is a last move sen out last move
+                    if (msg.equals("New_Game")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    if (msg == null) {
                         //not correctly connected to the server
                         check = false;
                         disconnect();
                     }
-
-                        if (check) {
-                            //if conected to the server
-                            //recieve the incoming move
-                            gameGUI.receiveMove(receivedMoveString);
-                            //update the player player on both side
-                            gameGUI.updatePlayer(receivedMoveString);
-                        }
                     }
                 } catch (IOException e) {
+                    //handle disconnect error
                     if (isConnected()) {
+                        //call the disconnect to disconnect
                         disconnect();
+                        //print error
                         gameGUI.StateError("Server Has Disconnected");
                     }
                 }
             }
         }
 
-    //used for write a move and connect to the server
-    public void sendMove(String move){
-        if(isConnected()){
-            write.println(move);
-        }
-    }
 
     // Assigns a random symbol to the player once connected, either X or O
 
     //HARD CODE FIRST PERSON TO CONNECT
-    public boolean assignSymbol() 
-    {
-        // Keep generating a random symbol until an unassigned one is found
-        do {
-        Random random = new Random();
-        this.symbol = (random.nextBoolean()) ? "X" : "O";
-    } while (!isSymbolAvailable(this.symbol));
-    assignedSymbols.add(this.symbol); // Add the assigned symbol to the set
-    return true;
-    }
-
-    // Check if the symbol is available (not assigned to any player)
-    private boolean isSymbolAvailable(String symbol) {
-        return !assignedSymbols.contains(symbol);
-    }
-
-    //getter function
-    public String getSymbol() 
-    {
-        return symbol;
-    }
-
+    //having a hardtime getting the playcount from the server
+    
     public void writeMessage(String message) {
         if (isConnected()) {
             //add the message
             write.println(message);
+            //remove message
+            write.flush();
         }
     }
-        
+    
+    //vommunicate with the server 
+    //public void ClientNetworking
     //add reading thread and fix boolean too
     //check if player is connected to server and used in GameGui
     public boolean connectToServer() {
@@ -125,7 +132,7 @@ public class GameClient{
             read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         
             // Perform handshake
-            write.println("SECRET\n3c3c4ac618656ae32b7f3431e75f7b26b1a14a87\nNAME\n" + symbol);
+            write.println("SECRET\n3c3c4ac618656ae32b7f3431e75f7b26b1a14a87\nNAME\n" );
             //delete stuff
             write.flush();
             // call read function
