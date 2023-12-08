@@ -28,17 +28,23 @@ public class GameClient{
     //store server properties
     public GameServer server;
 
+<<<<<<< HEAD
     public void setServer(GameServer server) {
         this.server = server;
     }
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
 
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){
         this.serverAddress = serverAddress;
         this.serverport = serverport;
         this.gameGUI = gameGUI;
+<<<<<<< HEAD
 
         
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
         
     }
 
@@ -55,7 +61,11 @@ public class GameClient{
 
                     //create variable that store incoming message being passed in the server
                     String msg = read.readLine();
+<<<<<<< HEAD
                     //System.out.println(msg);
+=======
+                    System.out.println(msg);
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
                     //use read for assigning synbil
 
                     //if msg == get assign the symbol x,tel gui your symbol is x
@@ -67,6 +77,7 @@ public class GameClient{
                     if (msg.equals("SYMBOL O")) {
                         gameGUI.receiveMsg(msg);
                     }
+<<<<<<< HEAD
                     //they click col 1 row 1
                     if (msg.equals("1")) {
                         gameGUI.receiveMsg(msg);
@@ -103,10 +114,28 @@ public class GameClient{
                     if (msg.equals("9")) {
                         gameGUI.receiveMsg(msg);
                     }
+=======
+
+
+                    // if msg == an update fromboard in oppent, call the receiveMove method from gameGui
+                    if (msg.equals("X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+                    //if msg == a click button that want to start a new game, communite that you are starting new game
+                    if (msg.equals("O")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
                     //if msg == a click button that want to start a quit button, communite that you are starting new game
                     if (msg.equals("Quit_Button")) {
                         gameGUI.receiveMsg(msg);
                     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
                     //detect is there is a last move sen out last move
                     if (msg.equals("New_Game")) {
                         gameGUI.receiveMsg(msg);
@@ -137,6 +166,7 @@ public class GameClient{
     //HARD CODE FIRST PERSON TO CONNECT
     //having a hardtime getting the playcount from the server
     
+<<<<<<< HEAD
     public void processMessage(String msg) {
         // Process the received message as needed
         // Example: Update the GUI, handle different message types, etc.
@@ -148,13 +178,18 @@ public class GameClient{
         
     }
 
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
     public void writeMessage(String message) {
         if (isConnected()) {
             //add the message
             write.println(message);
+<<<<<<< HEAD
             System.out.println("recieved from server " + message);
             //call a method in game server to be able to recieve the message
             //server.enqueueMove(message);
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
             //remove message
             write.flush();
         }

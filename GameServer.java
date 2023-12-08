@@ -13,8 +13,11 @@ public class GameServer implements Runnable {
     private List<String> upcomingMove;
     public int tracker = 1;
 
+<<<<<<< HEAD
     //private static GameServer server;
 
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
     //store num of ppl in the server
     public int playerCount = 0;
 
@@ -36,19 +39,29 @@ public class GameServer implements Runnable {
         private String symbol;
         private GameServer server;
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
         //add the play to server and read the size joinning server
         //keep track of the client added
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
             addPlayer(this);
+<<<<<<< HEAD
             //System.out.println(connectedClients.size());
+=======
+            System.out.println(connectedClients.size());
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
             try{
              // Move the call to sendSymbol after initializing the send PrintWriter
              send = new PrintWriter(playerSocket.getOutputStream(), true);
              receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
              sendSymbol();
+<<<<<<< HEAD
              //receive();
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
             }catch (IOException e) {
                 e.printStackTrace();  // Handle the exception appropriately, e.g., log it or exit
             }
@@ -116,14 +129,19 @@ public class GameServer implements Runnable {
         }
 
         public synchronized void recieveMove(String move){
+<<<<<<< HEAD
 
             System.out.println("Recieved move from client" + move);
             enqueueMove(move);
             dequeueAll();
+=======
+            send.println(move);
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
 
         }
 
         public synchronized void sendSymbol() {
+<<<<<<< HEAD
             if(tracker == 1 || tracker == 2){
             tracker++;
             playerCount++;
@@ -137,6 +155,19 @@ public class GameServer implements Runnable {
             //System.out.println(this.symbol);
            }
            //System.out.println("SYMBOL " + this.symbol);
+=======
+            playerCount++;
+            System.out.println("Count" + playerCount);
+            if(playerCount == 1){
+            this.symbol = "X";
+            System.out.println(this.symbol);
+           }
+           else{
+            this.symbol = "O";
+            System.out.println(this.symbol);
+           }
+           System.out.println("SYMBOL " + this.symbol);
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
             send.println("SYMBOL " + this.symbol);
         }
     }
@@ -144,23 +175,49 @@ public class GameServer implements Runnable {
 
     //take in all teh message
     public synchronized void enqueueMove(String move) {
+<<<<<<< HEAD
 
         System.out.println("Recieved move from gui" + move);
             //enqueueMove(move);
             //();
+=======
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
             upcomingMove.add(move);
     }
 
     //display all the message
     private synchronized void dequeueAll() {
+<<<<<<< HEAD
         List<String> moves = new ArrayList<>(upcomingMove);
         upcomingMove.clear();
         for (GameClient player : connectedClients) {
             for (String move : moves) {
                 player.sendMove(move);
+=======
+            List<String> moves = new ArrayList<>(upcomingMove);
+            upcomingMove.clear();
+            for (GameClient player : connectedClients) {
+                for (String move : moves) {
+                    player.sendMove(move);
+                }
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
             }
-        }
     }
+<<<<<<< HEAD
+=======
+
+    /*public synchronized void addPlayer(GameClient player) {
+            connectedClients.add(player);
+            System.out.println("inc. playercount : " + playerCount);
+    }*/
+
+    /*public synchronized void removePlayer(GameClient player) {
+            connectedClients.remove(player);
+        
+    }*/
+
+
+>>>>>>> f4b2359fb1f51b2aa1ba23ccb082482e93aacded
     public void serve() {
         while (true) {
             try {

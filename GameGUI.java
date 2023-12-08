@@ -38,17 +38,6 @@ public class GameGUI extends JFrame
     private JLabel yourSymbolLabel;
     //set the actual symbol either x or y
     private JTextArea userSymbolTextArea;
-
-    //store the symbol being sent in my server
-    public String ClientSymbol ;
-    //store the apponent
-    public String opponent;
-
-    public int opponentClickedRow;
-
-    public int opponentClickCol;
-
-    //VARIABLE USED IN MIDDLE
     //store the 3x3 button
     private JButton[][] boardButtons;
     //keep track of row
@@ -221,6 +210,15 @@ private JPanel createRightPanel() {
     userSymbolTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 100));
     rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
 
+    if(gameGUI != null){
+    userSymbolTextArea.setText(String.valueOf( gameGUI.getSymbol() ) /*gameGUI.getSymbol())*/);
+    userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 300)));
+
+    if(gameGUI.assignSymbol() == true){
+        userSymbolTextArea = new JTextArea(gameGUI.getSymbol());
+    }
+    }
+
     rightPanel.add(userSymbolTextArea, BorderLayout.SOUTH);
 
     return rightPanel;
@@ -295,7 +293,7 @@ private JPanel createTop(){
 
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
         boardButtons = new JButton[3][3];
-        //create action listener that when u click it it disappears and turns into that symbol
+        //  TODO: create action listener that when u click it it disappears and turns into that symbol
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 boardButtons[i][j] = new JButton();
@@ -366,7 +364,7 @@ private class connectAction implements ActionListener {
                 //then have the player assigned a random symbol
                 //gameGUI.assignSymbol();
 
-                String assignedSymbol = ClientSymbol;
+                String assignedSymbol = gameGUI.getSymbol();
 
                 // Now you can access the player's symbol using gameGUI.getSymbol() or a similar method
                 
@@ -410,24 +408,6 @@ private class connectAction implements ActionListener {
         }
     }
 
-    //class to handle listner action when opponent does something
-    private class OpponentButtonClickListner implements ActionListener{
-
-        public int getOppenentRow(){
-            return opponentClickedRow;
-        }
-
-        public int getOpponentCol(){
-            return opponentClickCol;
-        }
-
-        public void actionPerformed (ActionEvent e){
-
-        }
-
-    }
-
-    //COMEBACK
     // new class for board button click listener
     private class BoardButtonClickListener implements ActionListener{
 
@@ -456,10 +436,6 @@ private class connectAction implements ActionListener {
                         if (boardButtons[i][j] == clickedButton) {
                             clickedRow = i;
                             clickedCol = j;
-
-                            
-                            //somehow call the function to send to server for server to be able to send to other player
-                            //send the symbol tht click
                             break;
                         }
                     }
@@ -469,7 +445,7 @@ private class connectAction implements ActionListener {
                     // Check if the clicked button is empty
                     if (boardButtons[clickedRow][clickedCol].getText().isEmpty()) {
                         // Update the button with the current player's symbol
-                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(ClientSymbol));
+                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(gameGUI.getSymbol()));
         
                         // Disable the clicked button to prevent further clicks
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
@@ -481,13 +457,12 @@ private class connectAction implements ActionListener {
                             // Display the "Last Move" since there is exactly one move left
                             String lastMoveDescription = "Last Move: Player " + Symbol + " at (" + clickedRow + ", " + clickedCol + ")";
                             LastMOVE.setText(lastMoveDescription);
-                        }*/
-                        int moveNumber = clickedRow * 3 + clickedCol + 1;
-                        sendMove(String.valueOf(moveNumber));
-                        //System.out.println(moveNumber);
+                        }
+
+                        sendMove();
                     }
                 }
-
+            }
         }
     }
         
@@ -496,131 +471,38 @@ private class connectAction implements ActionListener {
 //update the player symbol
 public void getPlayerSymbol(String symbol)
 {
-    userSymbolTextArea.setText(symbol);
+    yourSymbolLabel.setText(player);
+}
+
+//update the player symbol on the GUI
+public void updatePlayerSymbol(String symbol){
+    //Updatethe gui to display the assigned symbol
+    // Assuming you have two players (player 1 and player 2)
+    if (symbol.equals("X")) {
+        userSymbolTextArea.setText("X");
+    } else if (symbol.equals("O")) {
+        userSymbolTextArea.setText("O");
+    }
+    // You can customize this based on the actual names or labels you want to display
 }
 
 
-//COMEBACK
-public synchronized void receiveMsg(String move) {
+public void receiveMove(String move) {
     try {
-        String move1 = move;
-       
-        if (move.startsWith("SYMBOL X")) {
+        // Check if the move is in the "SYMBOL:" format
+        if (move.startsWith("SYMBOL:")) {
             // Handle the SYMBOL message, for example, update the player symbol
-            String symbolX = move.substring(move.indexOf("X"));
-            //updatePlayer(symbol);
-            ClientSymbol = "X";
-            opponent = "O";
-
-            JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: X");
-            userSymbolTextArea.setText(ClientSymbol);
-            userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-            //clickedButton.setText("X");
-
-
-        }
-        //if the server tell you your move is y
-        if (move.startsWith("SYMBOL O")) {
-            // Handle the SYMBOL message, for example, update the player symbol
-            String symbolO = move.substring(move.indexOf("O"));
-            //updatePlayer(symbol);
-            ClientSymbol = "O";
-            opponent = "X";
-            JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: O");
-            userSymbolTextArea.setText(ClientSymbol);
-            userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-            //clickedButton.setText("O");
-
-
-        }
-        //when someone clicks a button, they click col 1 row 1
-        if (move.startsWith("1")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 1;
-            boardButtons[1][1].addActionListener(new BoardButtonClickListener());
-
-
-        }
-        //call click button function for specific button
-        //when someone clicks a button, they click col 1 row 2
-        if (move.startsWith("2")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 2;
-            boardButtons[1][2].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 1 row 3
-        if (move.startsWith("3")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 3;
-            boardButtons[1][3].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 2 row 1
-        if (move.startsWith("4")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 1;
-            boardButtons[2][1].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 2 row 2
-        if (move.startsWith("5")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 2;
-            boardButtons[2][2].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 2 row 3
-        if (move.startsWith("6")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 3;
-            boardButtons[2][3].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 3 row 1
-        if (move.startsWith("7")) {
-            opponentClickedRow = 3;
-            opponentClickCol = 1;
-            boardButtons[3][1].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 3 row 2
-        if (move.startsWith("8")) {
-            opponentClickedRow = 3;
-            opponentClickCol = 2;
-            boardButtons[3][2].addActionListener(new BoardButtonClickListener());
-
-        }
-        //when someone clicks a button, they click col 3 row 3
-        if (move.startsWith("9")) {
-            opponentClickedRow = 3;
-            opponentClickCol = 3;
-            boardButtons[3][3].addActionListener(new BoardButtonClickListener());
-
-        }
-        //if the server tell you that the opponent quit the game
-        if(move.startsWith("Quit_Button")){
-            //call methid that hande when someone quit a game
-            QuitGameButtonClickListener quitListener = new QuitGameButtonClickListener();
-            quitGameButton.addActionListener(quitListener);
-        }
-        //if the server tell you that the opponent start a new game
-        if(move.startsWith("New_Game")){
-            NewGameButtonClickListener newListener = new NewGameButtonClickListener();
-            newGameButton.addActionListener(newListener);
-
-        }
-        //if the server tell you the oppenent click a things on the board
-        /*else
-         {
+            String symbol = move.substring("SYMBOL:".length()).trim();
+            updatePlayer(symbol);
+        } else {
             // Split the move string into coordinates (row, column)
             String[] coordinates = move.split(",");
             int row = Integer.parseInt(coordinates[0]);
             int col = Integer.parseInt(coordinates[1]);
 
             // Update the board with the opponent's move
-            //String opponentSymbol = gameGUI.getSymbol(); 
-            boardButtons[row][col].setText(String.valueOf(ClientSymbol));
+            String opponentSymbol = gameGUI.getSymbol(); // Use getSymbol to get the opponent's symbol
+            boardButtons[row][col].setText(String.valueOf(opponentSymbol));
             boardButtons[row][col].setEnabled(false); // Disable the button
 
             // Check if the game has ended
@@ -632,10 +514,10 @@ public synchronized void receiveMsg(String move) {
                 System.out.println("It's a Draw!");
             } else {
                 // Switch players
-                //urrentPlayer = Symbol; // Assuming you want to switch to the current player
-                //updatePlayer(currentPlayer);
-            }*/
-
+                currentPlayer = gameGUI.getSymbol(); // Assuming you want to switch to the current player
+                updatePlayer(currentPlayer);
+            }
+        }
     } catch (NumberFormatException e) {
         // Handle the case where the move string is not in the expected format
         e.printStackTrace(); // Log the exception or handle it appropriately
@@ -645,13 +527,11 @@ public synchronized void receiveMsg(String move) {
 //check status method to see win or draw
 
     //send the player a move
-    //maybe have to fix something here
-    public synchronized void sendMove(String msg){
-        
-        if(this.gameGUI != null && msg != null){
-            System.out.println("Send Move in server: " + msg);
-            
-            server.enqueueMove(msg);
+    public void sendMove(){
+        //store the move that the onther player had, which is a symbol
+        String move = clickedRow + "," + clickedCol;
+        if (move != null) {
+            gameGUI.sendMove(move);
         }
     }
 
@@ -670,8 +550,8 @@ private class NewGameButtonClickListener implements ActionListener{
         //reassgn symbol
         //gameGUI.assignSymbol();
         //updat the gui to siplay the new symbol
-        //updatePlayerSymbol(Symbol);
-        JOptionPane.showMessageDialog(null, "Your symbol is: " + ClientSymbol + " Symbol Reassigned", "Information", JOptionPane.INFORMATION_MESSAGE);
+        updatePlayerSymbol(gameGUI.getSymbol());
+        JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: " + gameGUI.getSymbol(), "Symbol Reassigned", JOptionPane.INFORMATION_MESSAGE);
         //enable all button on the board
         enableAllButtons();
         // Reset turns when starting a new game
@@ -725,7 +605,7 @@ private class QuitGameButtonClickListener implements ActionListener {
         {
             for (int j = 0; j < 3; j++) 
             {
-                boardButtons[i][j].setText(ClientSymbol);
+                boardButtons[i][j].setText(currentPlayer);
             }
         }
 
@@ -737,7 +617,7 @@ private class QuitGameButtonClickListener implements ActionListener {
     }
 
     
-    tictactoeboard.isWinner(ClientSymbol);
+    tictactoeboard.isWinner(gameGUI.getSymbol());
     tictactoeboard.isDraw();
         
 }
@@ -750,5 +630,3 @@ private class QuitGameButtonClickListener implements ActionListener {
         gameGUI.setVisible(true);
     }
 }
-
-

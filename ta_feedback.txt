@@ -1,0 +1,3 @@
+- If there is only one person connected to the server, deny the ability for the player to move
+  - Ensures both players are required to play the game
+- Make font inside the TicTacToe box bigger
