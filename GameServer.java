@@ -11,7 +11,11 @@ public class GameServer implements Runnable {
     private ServerSocket serverSock;
     private List<GameClient> connectedClients;
     private List<String> upcomingMove;
+    public int tracker = 1;
 
+    //private static GameServer server;
+
+    //store num of ppl in the server
     public int playerCount = 0;
 
     public GameServer(int serverPort) {
@@ -22,9 +26,7 @@ public class GameServer implements Runnable {
         } catch (IOException e) {
             System.err.println("Cannot establish server socket");
             System.exit(1);
-        }
-
-        
+        } 
     }
 
     public class GameClient extends Thread {
@@ -32,39 +34,41 @@ public class GameServer implements Runnable {
         private PrintWriter send;
         private BufferedReader receive;
         private String symbol;
+        private GameServer server;
 
+        
+        //add the play to server and read the size joinning server
         //keep track of the client added
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
-
-           if(playerCount == 0){
-            this.symbol = "X";
-            System.out.println(this.symbol);
-           }
-           else{
-            
-            this.symbol = "O";
-            System.out.println(this.symbol);
-           }
-           addPlayer(this);
-           System.out.println(connectedClients.size());
+            addPlayer(this);
+            //System.out.println(connectedClients.size());
+            try{
+             // Move the call to sendSymbol after initializing the send PrintWriter
+             send = new PrintWriter(playerSocket.getOutputStream(), true);
+             receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
+             sendSymbol();
+             //receive();
+            }catch (IOException e) {
+                e.printStackTrace();  // Handle the exception appropriately, e.g., log it or exit
+            }
         }
 
+        //occur when server is running
         @Override
         public void run() {
             try {
                 send = new PrintWriter(playerSocket.getOutputStream(), true);
                 receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-
-                // Send the assigned symbol to the client
-                send.println("SYMBOL:" + this.symbol);
+                //Send the assigned symbol to the GameClient taht then get display in us
+                //send.println("SYMBOL:" + this.symbol);
                 //when client connect you just send whatever
 
                 //listen for a move
                 while (true) {
                     String move = receive.readLine();
-                    if (move == null) {
-                        removePlayer(this);
+                    if (move.equals(null)) {
+                        //removePlayer(this);
                         enqueueMove(move);
                         dequeueAll();
                         break;
@@ -73,71 +77,98 @@ public class GameServer implements Runnable {
                     // Broadcast the move to all connected clients
                     upcomingMove.add(move);
                 }
-            } catch (IOException e) {
+            
+            }catch (IOException e) {
                 e.printStackTrace();
-            } finally {
+                }
+             finally {
                 try {
                     send.close();
                     receive.close();
                     playerSocket.close();
                     removePlayer(this);
-                    System.out.println("Connection lost:" + playerSocket.getRemoteSocketAddress());
+                    //System.out.println("Connection lost:" + playerSocket.getRemoteSocketAddress());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+        public void setServer(GameServer server) {
+            this.server = server;
+        }
+
+        public void removePlayer(GameClient player) {
+            synchronized (secret) {
+                connectedClients.remove(player);
+            }
+        }
+
+        public void addPlayer(GameClient player) {
+            synchronized (secret) {
+                connectedClients.add(player);
+            }
+        }
 
         public synchronized void sendMove(String move) {
             // Send a move to the client
+            System.out.println("in send move in server: " + move);
             send.println(move);
         }
 
-        public synchronized void sendSymbol(String symbol) {
-            send.println("SYMBOL");
+        public synchronized void recieveMove(String move){
+
+            System.out.println("Recieved move from client" + move);
+            enqueueMove(move);
+            dequeueAll();
+
+        }
+
+        public synchronized void sendSymbol() {
+            if(tracker == 1 || tracker == 2){
+            tracker++;
+            playerCount++;
+            //System.out.println("Count" + playerCount);
+            if(playerCount == 1){
+            this.symbol = "X";
+            //System.out.println(this.symbol);
+           }
+           else{
+            this.symbol = "O";
+            //System.out.println(this.symbol);
+           }
+           //System.out.println("SYMBOL " + this.symbol);
+            send.println("SYMBOL " + this.symbol);
         }
     }
+}
 
     //take in all teh message
     public synchronized void enqueueMove(String move) {
+
+        System.out.println("Recieved move from gui" + move);
+            //enqueueMove(move);
+            //();
             upcomingMove.add(move);
     }
 
     //display all the message
     private synchronized void dequeueAll() {
-            List<String> moves = new ArrayList<>(upcomingMove);
-            upcomingMove.clear();
-            for (GameClient player : connectedClients) {
-                for (String move : moves) {
-                    player.sendMove(move);
-                }
+        List<String> moves = new ArrayList<>(upcomingMove);
+        upcomingMove.clear();
+        for (GameClient player : connectedClients) {
+            for (String move : moves) {
+                player.sendMove(move);
             }
+        }
     }
-
-    public synchronized void addPlayer(GameClient player) {
-            connectedClients.add(player);
-            playerCount++;
-            System.out.println("inc. playercount : " + playerCount);
-    }
-
-    public synchronized void removePlayer(GameClient player) {
-            connectedClients.remove(player);
-        
-    }
-
-    public synchronized int playCount(){
-      //playerCount = connectedClients.size();
-      System.out.println("get player count: " + playerCount);
-        return playerCount;
-    }
-
     public void serve() {
         while (true) {
             try {
                 Socket player = serverSock.accept();
-                System.out.println("New Connection: " + player.getRemoteSocketAddress());
+                //System.out.println("New Connection: " + player.getRemoteSocketAddress());
                 GameClient client = new GameClient(player);
-                client.start(); // Start the GameClient thread
+                client.setServer(this); // Set the server using the method
+                client.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -19,10 +19,6 @@ public class GameClient{
     private Socket socket;
     //check that the user is correctly connect to the server
     private boolean check = false;
-    //store the player symbol
-    private String symbol;
-    //keep track of symbol that have been assigned to payers to ensure that eah symbol is unique
-    private static final Set<String> assignedSymbols = new HashSet<>();
     //store the ipaddress
     private final String serverAddress;
     //store the port number
@@ -32,98 +28,135 @@ public class GameClient{
     //store server properties
     public GameServer server;
 
-    public int playerCount = 0 ;
-
+    public void setServer(GameServer server) {
+        this.server = server;
+    }
 
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){
         this.serverAddress = serverAddress;
         this.serverport = serverport;
         this.gameGUI = gameGUI;
-        //this.server = server;
-        //playerCount++;
+
+        
+        
     }
 
     //inner class repesenting the thread for reading move
     private class ReadingThread extends Thread{
         //store the play symbol
-        //protected String move; 
+        //protected String msg; 
         //fuction to run thread
         public void run() {
             try {
                 // Initialize resources (send, receive, etc.)
                 while (isConnected()) {
-                    //assign symbol in thread, say you symbol x or 0
-                    if(line)
-
-                    //create variable that store incoming move
-                    String receivedMoveString = read.readLine();
-                    //use read for assigning synbil
                     
 
-                    if (receivedMoveString == null) {
+                    //create variable that store incoming message being passed in the server
+                    String msg = read.readLine();
+                    //System.out.println(msg);
+                    //use read for assigning synbil
+
+                    //if msg == get assign the symbol x,tel gui your symbol is x
+                    if (msg.equals("SYMBOL X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+                    //if msg == get assigned the symbol y, you tell gui you symbol is o
+                    if (msg.equals("SYMBOL O")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 1 row 1
+                    if (msg.equals("1")) {
+                        gameGUI.receiveMsg(msg);
+                    } 
+                    //they click col 1 row 2
+                    if (msg.equals("2")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 1 row 3
+                    if (msg.equals("3")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 2 row 1
+                    if (msg.equals("4")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 2 row 2
+                    if (msg.equals("5")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 2 row 3
+                    if (msg.equals("6")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 3 row 1
+                    if (msg.equals("7")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 3 row 2
+                    if (msg.equals("8")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 3 row 3
+                    if (msg.equals("9")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //if msg == a click button that want to start a quit button, communite that you are starting new game
+                    if (msg.equals("Quit_Button")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //detect is there is a last move sen out last move
+                    if (msg.equals("New_Game")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    if (msg == null) {
                         //not correctly connected to the server
                         check = false;
                         disconnect();
+                    }else{
+                        processMessage(msg);
                     }
-                            gameGUI.receiveMove(receivedMoveString);
-                            //update the player player on both side
-                            gameGUI.updatePlayer(receivedMoveString);
                     }
                 } catch (IOException e) {
+                    //handle disconnect error
                     if (isConnected()) {
+                        //call the disconnect to disconnect
                         disconnect();
+                        //print error
                         gameGUI.StateError("Server Has Disconnected");
                     }
                 }
             }
         }
 
-        
-    //used for write a move and connect to the server
-    public synchronized void sendMove(String move){
-        if(isConnected()){
-            write.println(move);
-            write.flush();
-        }
-
-    }
 
     // Assigns a random symbol to the player once connected, either X or O
 
     //HARD CODE FIRST PERSON TO CONNECT
     //having a hardtime getting the playcount from the server
-    public boolean assignSymbol() 
-    {
-        /*int count = server.playCount();
-        System.out.println("Count: " + count);
-        if(count == 0){
-            this.symbol = "X";
-            //count++;
-            System.out.println("Game client" + this.symbol);
-        }
-        else{
-            this.symbol = "O";
-            System.out.println("Game client" + this.symbol);
-
-        }
-        */
-        this.symbol = symbol;
-        return true;
-    }
-
     
+    public void processMessage(String msg) {
+        // Process the received message as needed
+        // Example: Update the GUI, handle different message types, etc.
+        gameGUI.receiveMsg(msg);
+        //System.out.println("Recieve from geu " + msg);
+        //send the message to server
+        //server.enqueueMove(msg); //NOTWORKINGIDKY
 
-    //getter function
-    public String getSymbol() 
-    {
-        return this.symbol;
+        
     }
 
     public void writeMessage(String message) {
         if (isConnected()) {
             //add the message
             write.println(message);
+            System.out.println("recieved from server " + message);
+            //call a method in game server to be able to recieve the message
+            //server.enqueueMove(message);
+            //remove message
+            write.flush();
         }
     }
     
@@ -133,6 +166,8 @@ public class GameClient{
     //check if player is connected to server and used in GameGui
     public boolean connectToServer() {
         try {
+            System.out.println("Connecting to server at " + serverAddress + ":" + serverport);
+
             // Close existing resources if any
             disconnect();
             //open socket and get ip and port
@@ -143,7 +178,7 @@ public class GameClient{
             read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         
             // Perform handshake
-            write.println("SECRET\n3c3c4ac618656ae32b7f3431e75f7b26b1a14a87\nNAME\n" + symbol);
+            write.println("SECRET\n3c3c4ac618656ae32b7f3431e75f7b26b1a14a87\nNAME\n" );
             //delete stuff
             write.flush();
             // call read function
@@ -176,6 +211,7 @@ public class GameClient{
     }  
     //store if player is connected to server
     public boolean isConnected(){
+        System.out.println(" check is connected in gameClient");
         return check;
     }
 
@@ -187,6 +223,7 @@ public class GameClient{
                 read.close();
                 socket.close();
                 check = false;
+                //server = null; //added
             }
         } catch (IOException e) {
             e.printStackTrace();
