@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
  
@@ -10,7 +11,10 @@ public class GameServer implements Runnable {
     private final Object secret = new Object();
     private ServerSocket serverSock;
     private List<GameClient> connectedClients;
+    //upcoming = move in local gui sent from player 1 to server
     private List<String> upcomingMove;
+    //outgoing = server sends out player 1's move to other player's local GUI
+    //private List<String> outgoingMove;
     public int tracker = 1;
  
     //private static GameServer server;
@@ -23,6 +27,7 @@ public class GameServer implements Runnable {
             serverSock = new ServerSocket(serverPort);
             connectedClients = new ArrayList<>();
             upcomingMove = new ArrayList<>();
+            //outgoingMove = new ArrayList<>();
         } catch (IOException e) {
             System.err.println("Cannot establish server socket");
             System.exit(1);
@@ -117,15 +122,15 @@ public class GameServer implements Runnable {
  
         public synchronized void recieveMove(String move){
  
-            System.out.println("Recieved move from client" + move);
+            System.out.println("Recieved move from gui update by user move" + move);
             enqueueMove(move);
             dequeueAll();
  
         }
  
         public synchronized void sendSymbol() {
-            if(tracker == 1 || tracker == 2){
-            tracker++;
+            // if(tracker == 1 || tracker == 2){
+            // tracker++;
             playerCount++;
             //System.out.println("Count" + playerCount);
             if(playerCount == 1){
@@ -140,15 +145,40 @@ public class GameServer implements Runnable {
             send.println("SYMBOL " + this.symbol);
         }
     }
-}
+//}
  
     //take in all teh message
     public synchronized void enqueueMove(String move) {
- 
-        System.out.println("Recieved move from gui" + move);
+        System.out.println("Recieved move from gui...we sent player 1 move from their gui to server" + move);
             //enqueueMove(move);
             //();
             upcomingMove.add(move);
+    }
+
+    public synchronized void dequeueMove(String move) {
+        List<String> outgoingMove = new LinkedList<String>();
+        for(String m : outgoingMove) {
+            if(move.isEmpty() != false) upcomingMove.add(move);
+            }
+            for(String d : upcomingMove) {
+                upcomingMove.remove(move);
+            }
+            //enqueueMove(d);
+            //dequeueAll();
+//dequeu ones you just added to upcoming move list from outgoing moves. thats what updated on other gui
+
+        System.out.println("we got player 1 move from their gui in our gui thru server" + move);
+            //enqueueMove(move);
+            //();
+            upcomingMove.get(0);
+            
+    }
+
+    public synchronized String dequeueMove() {
+        if (upcomingMove.isEmpty()) {
+            return null;
+        }
+        return upcomingMove.remove(0);
     }
  
     //display all the message

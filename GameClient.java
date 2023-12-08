@@ -63,7 +63,7 @@ public class GameClient{
                         gameGUI.receiveMsg(msg);
                     }
  
-                    //if msg == get assigned the symbol y, you tell gui you symbol is o
+                    //if msg == get assigned the symbol x, you tell gui you symbol is o
                     if (msg.equals("SYMBOL O")) {
                         gameGUI.receiveMsg(msg);
                     }
@@ -210,7 +210,7 @@ public class GameClient{
     }  
     //store if player is connected to server
     public boolean isConnected(){
-        System.out.println(" check is connected in gameClient");
+        //System.out.println(" check is connected in gameClient");
         return check;
     }
  

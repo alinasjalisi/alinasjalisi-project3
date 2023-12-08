@@ -339,7 +339,7 @@ private class connectAction implements ActionListener {
         //get port
         int port = Integer.parseInt(PortNum.getText());
  
-        if(this.gameGUI != null){
+        if(gameGUI != null){
             System.out.println("Checking if is connected and then establish server in gui: " + port);
             server = new GameServer(port);
         }
@@ -510,6 +510,7 @@ public synchronized void receiveMsg(String move) {
             userSymbolTextArea.setText(ClientSymbol);
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
             //clickedButton.setText("X");
+            System.out.println("Your symbol has been assigned x");
  
         }
         //if the server tell you your move is y
@@ -523,6 +524,7 @@ public synchronized void receiveMsg(String move) {
             userSymbolTextArea.setText(ClientSymbol);
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
             //clickedButton.setText("O");
+            System.out.println("Your symbol has been assigned o");
  
         }
         //when someone clicks a button, they click col 1 row 1
@@ -637,12 +639,27 @@ public synchronized void receiveMsg(String move) {
  
     //send the player a move
     //maybe have to fix something here
+
     public synchronized void sendMove(String msg){
-       
         if(this.gameGUI != null && msg != null){
-            System.out.println("Send Move in server: " + msg);
-           
+            System.out.println("send move in server from gui move mdae by player: " + msg);
+           //tell server ur sendimg move from gui 
+           //server needs to recieve so it can give to other player
             server.enqueueMove(msg);
+
+            //this is the method that gets whatever move was sent to server by player 1 and then "dequeues" it into the other person's gui thru server
+            //server.dequeueMove(msg);
+            //^^might not go here, maybe make method() for recievemovefromserver 
+        }
+    }
+
+    public synchronized void receiveMoveFromServer() {
+        String move = server.dequeueMove();
+        if (move != null) {
+            // Update the GUI with the received move
+            System.out.println("Received player 1 move from server and now updating other players GUI: " + move);
+            // ... update GUI code ...
+            // delete this receiveMoveFromServer.length-1;
         }
     }
  
