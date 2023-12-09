@@ -429,7 +429,8 @@ private class connectAction implements ActionListener {
     //COMEBACK
     // new class for board button click listener
     private class BoardButtonClickListener implements ActionListener{
- 
+
+        //System.out.println("Getting in the button action");
         //getter for row and colo
  
         public int getClickedRow() {
@@ -441,6 +442,11 @@ private class connectAction implements ActionListener {
         }
  
         public void actionPerformed(ActionEvent e) {
+
+
+
+                //System.out.println("Getting in the button action");
+
                 //determin the positoon of the clicked button on the game board and update its state
                 clickedButton = (JButton) e.getSource();
  
@@ -481,6 +487,7 @@ private class connectAction implements ActionListener {
                             LastMOVE.setText(lastMoveDescription);
                         }*/
                         int moveNumber = clickedRow * 3 + clickedCol + 1;
+                        
                         sendMove(String.valueOf(moveNumber));
                         //System.out.println(moveNumber);
                     }
@@ -488,6 +495,9 @@ private class connectAction implements ActionListener {
  
         }
     }
+
+
+
        
  
 //COMEBACK
@@ -532,106 +542,100 @@ public synchronized void receiveMsg(String move) {
         }
         //when someone clicks a button, they click col 1 row 1
         if (move.startsWith("1")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 1;
-            boardButtons[0][0].addActionListener(new BoardButtonClickListener());
- 
+            System.out.println("getting to 1 in gui");
+            clickedRow = 0;
+            clickedCol = 0;
+            
+            ClientSymbol = opponent;
+            boardButtons[0][0].doClick();
         }
         //call click button function for specific button
         //when someone clicks a button, they click col 1 row 2
         if (move.startsWith("2")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 2;
-            boardButtons[0][1].addActionListener(new BoardButtonClickListener());
+            opponentClickedRow = 0;
+            opponentClickCol = 1;
+            ClientSymbol = opponent;
+            boardButtons[0][1].doClick();
  
         }
         //when someone clicks a button, they click col 1 row 3
         if (move.startsWith("3")) {
             opponentClickedRow = 1;
-            opponentClickCol = 3;
-            boardButtons[0][2].addActionListener(new BoardButtonClickListener());
+            opponentClickCol = 2;
+            ClientSymbol = opponent;
+            boardButtons[0][2].doClick();
  
         }
         //when someone clicks a button, they click col 2 row 1
         if (move.startsWith("4")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 1;
-            boardButtons[1][0].addActionListener(new BoardButtonClickListener());
+            opponentClickedRow = 1;
+            opponentClickCol = 0;
+            ClientSymbol = opponent;
+            boardButtons[1][0].doClick();
  
         }
         //when someone clicks a button, they click col 2 row 2
         if (move.startsWith("5")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 2;
-            boardButtons[1][1].addActionListener(new BoardButtonClickListener());
+            opponentClickedRow = 1;
+            opponentClickCol = 1;
+            ClientSymbol = opponent;
+            boardButtons[1][1].doClick();
  
         }
         //when someone clicks a button, they click col 2 row 3
         if (move.startsWith("6")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 3;
-            boardButtons[1][2].addActionListener(new BoardButtonClickListener());
+            opponentClickedRow = 1;
+            opponentClickCol = 2;
+            ClientSymbol = opponent;
+            boardButtons[1][2].doClick();
  
         }
         //when someone clicks a button, they click col 3 row 1
         if (move.startsWith("7")) {
-            opponentClickedRow = 3;
-            opponentClickCol = 1;
-            boardButtons[2][0].addActionListener(new BoardButtonClickListener());
+            opponentClickedRow = 2;
+            opponentClickCol = 0;
+            ClientSymbol = opponent;
+            boardButtons[2][0].doClick();
  
         }
         //when someone clicks a button, they click col 3 row 2
         if (move.startsWith("8")) {
-            opponentClickedRow = 3;
-            opponentClickCol = 2;
-            boardButtons[2][1].addActionListener(new BoardButtonClickListener());
+            opponentClickedRow = 2;
+            opponentClickCol = 1;
+            ClientSymbol = opponent;
+            boardButtons[2][1].doClick();
  
         }
         //when someone clicks a button, they click col 3 row 3
         if (move.startsWith("9")) {
-            opponentClickedRow = 3;
-            opponentClickCol = 3;
-            boardButtons[2][2].addActionListener(new BoardButtonClickListener());
- 
+            opponentClickedRow = 2;
+            opponentClickCol = 2;
+            ClientSymbol = opponent;
+            boardButtons[2][2].doClick();
         }
         //if the server tell you that the opponent quit the game
-        if(move.startsWith("Quit_Button")){
+        if (move.startsWith("Quit_Game")) {
             //call methid that hande when someone quit a game
-            QuitGameButtonClickListener quitListener = new QuitGameButtonClickListener();
-            quitGameButton.addActionListener(quitListener);
+            //GameGUI.this.Connect_Disconnect.removeActionListener(this);
+            //reset everything to empty
+            resetBoardPanel();
+            enableAllButtons();
+            //call to disconnect from server
+            //gameGUI.disconnect();
+            JOptionPane.showMessageDialog(GameGUI.this, "Player Has Quit Game");
+            userSymbolTextArea.setText (" ");
+            gameGUI.disconnect();
+
+
         }
-        //if the server tell you that the opponent start a new game
+        // if the server tell you that the opponent start a new game
         if(move.startsWith("New_Game")){
-            NewGameButtonClickListener newListener = new NewGameButtonClickListener();
-            newGameButton.addActionListener(newListener);
+            resetBoardPanel();
+            enableAllButtons();            
+            JOptionPane.showMessageDialog(GameGUI.this, "Player Has Started A New Game");
+
  
         }
-        //if the server tell you the oppenent click a things on the board
-        /*else
-         {
-            // Split the move string into coordinates (row, column)
-            String[] coordinates = move.split(",");
-            int row = Integer.parseInt(coordinates[0]);
-            int col = Integer.parseInt(coordinates[1]);
- 
-            // Update the board with the opponent's move
-            //String opponentSymbol = gameGUI.getSymbol();
-            boardButtons[row][col].setText(String.valueOf(ClientSymbol));
-            boardButtons[row][col].setEnabled(false); // Disable the button
- 
-            // Check if the game has ended
-            if (tictactoeboard.isWinner(move)) {
-                // Handle the case where the opponent wins
-                System.out.println("Opponent Wins!");
-            } else if (tictactoeboard.isDraw()) {
-                // Handle the case where the game is a draw
-                System.out.println("It's a Draw!");
-            } else {
-                // Switch players
-                //urrentPlayer = Symbol; // Assuming you want to switch to the current player
-                //updatePlayer(currentPlayer);
-            }*/
- 
     } catch (NumberFormatException e) {
         // Handle the case where the move string is not in the expected format
         e.printStackTrace(); // Log the exception or handle it appropriately
@@ -675,24 +679,9 @@ public synchronized void receiveMsg(String move) {
 private class NewGameButtonClickListener implements ActionListener{
        
     public void actionPerformed(ActionEvent e){
-        //restart the board
-        resetBoardPanel();
-        //reassgn symbol
-        //gameGUI.assignSymbol();
-        //updat the gui to siplay the new symbol
-        //updatePlayerSymbol(Symbol);
-        JOptionPane.showMessageDialog(null, "Your symbol is: " + ClientSymbol + " Symbol Reassigned", "Information", JOptionPane.INFORMATION_MESSAGE);
-        //enable all button on the board
-        enableAllButtons();
-        // Reset turns when starting a new game
-        //playerTurn.resetTurn();
- 
-        //send the new game button to server
+       
 
-
-
-
-    // Add event handler for "New Game" button
+        sendMove("Receive_New_Game");
        
     }
 }
@@ -715,15 +704,8 @@ private class QuitGameButtonClickListener implements ActionListener {
  
     public void actionPerformed(ActionEvent e){
         //change the properties when you click quitgamebutton
-        GameGUI.this.Connect_Disconnect.removeActionListener(this);
-        //reset everything to empty
-        resetBoardPanel();
-        enableAllButtons();
-        //call to disconnect from server
-        gameGUI.disconnect();
- 
-        userSymbolTextArea.setText (" ");
-        //send the quitbutton to the server to senf to other player
+       
+        sendMove("Recieve_Quit_Game");
        
     }
 }

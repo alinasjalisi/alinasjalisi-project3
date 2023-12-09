@@ -23,6 +23,9 @@ public class GameServer implements Runnable {
     //public int playerCount = 0;
 
     private GameClient gameClient;
+
+    private int playerCount = 0;
+
  
     public GameServer(int serverPort) {
         try {
@@ -43,22 +46,20 @@ public class GameServer implements Runnable {
         private String symbol;
         private GameServer server;
         //store num of ppl in the server
-        private int playerCount;
  
        
         //add the play to server and read the size joinning server
         //keep track of the client added
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
-            this.playerCount = 0;
             addPlayer(this);
             //System.out.println(connectedClients.size());
             try{
              // Move the call to sendSymbol after initializing the send PrintWriter
              send = new PrintWriter(playerSocket.getOutputStream(), true);
              receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-             sendSymbol();
-             run();
+             //sendSymbol();
+             //run();
              //receive();
             }catch (IOException e) {
                 e.printStackTrace();  // Handle the exception appropriately, e.g., log it or exit
@@ -79,10 +80,19 @@ public class GameServer implements Runnable {
                 while (true) {
                     String move = receive.readLine();
                     System.out.println("Server Message: " + move);
+
+                    if(move.equals("Receive_New_Game")){
+                        move = "New_Game";
+
+                    }
+
+                    if(move.equals("Recieve_Quit_Game")){
+                        move = "Quit_Game";
+                    }
                     // if (move.equals(null)) {
                         //removePlayer(this);
                     enqueueMove(move);
-                    dequeueMove();
+                    dequeueAll();
                         // break;
                     // }
  
@@ -130,7 +140,7 @@ public class GameServer implements Runnable {
  
             System.out.println("Recieved move from gui update by user move" + move);
             enqueueMove(move);
-            dequeueMove();
+            dequeueAll();
  
         }
  
@@ -138,6 +148,7 @@ public class GameServer implements Runnable {
             // if(tracker == 1 || tracker == 2){
             // tracker++;
             playerCount++;
+            System.out.println("Count: " + playerCount);
             //System.out.println("Count" + playerCount);
             if(playerCount == 1){
             this.symbol = "X";
@@ -193,18 +204,26 @@ public class GameServer implements Runnable {
         upcomingMove.clear();
         for (GameClient player : connectedClients) {
             for (String move : moves) {
-                gameClient.sendMove(move);
+                player.sendMove(move);
             }
         }
     }
     public void serve() {
         while (true) {
+            // System.out.println("ACCEPTED1");
             try {
                 Socket player = serverSock.accept();
+                
+                //only two ppl can join server
+                //if(playerCount == 0 || playerCount == 3){
+                // System.out.println("ACCEPTED");
                 //System.out.println("New Connection: " + player.getRemoteSocketAddress());
                 GameClient client = new GameClient(player);
+                client.sendSymbol();
+                playerCount++;
                 client.setServer(this); // Set the server using the method
                 client.start();
+               // }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -219,7 +238,8 @@ public class GameServer implements Runnable {
     public static void main(String[] args) {
         int serverPort = 1234;
         GameServer server = new GameServer(serverPort);
-        Thread serverThread = new Thread(server);
-        serverThread.start();
+        server.serve();
+        // Thread serverThread = new Thread(server);
+        // serverThread.start();
     }
 }

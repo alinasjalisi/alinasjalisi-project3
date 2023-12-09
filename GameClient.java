@@ -28,9 +28,9 @@ public class GameClient{
     //store server properties
     public GameServer server;
  
-    public void setServer(GameServer server) {
+    /*public void setServer(GameServer server) {
         this.server = server;
-    }
+    }*/
  
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){
@@ -55,7 +55,6 @@ public class GameClient{
  
                     //create variable that store incoming message being passed in the server
                     String msg = read.readLine();
-                    System.out.println("MESSAGE: "+ msg);
                     //use read for assigning synbil
  
                     //if msg == get assign the symbol x,tel gui your symbol is x
@@ -69,6 +68,7 @@ public class GameClient{
                     }
                     //they click col 1 row 1
                     if (msg.equals("1")) {
+                        System.out.println("Getting to 1");
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 1 row 2
@@ -104,7 +104,7 @@ public class GameClient{
                         gameGUI.receiveMsg(msg);
                     }
                     //if msg == a click button that want to start a quit button, communite that you are starting new game
-                    if (msg.equals("Quit_Button")) {
+                    if (msg.equals("Quit_Game")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //detect is there is a last move sen out last move
