@@ -78,6 +78,63 @@ public class GameServer implements Runnable {
                     String move = receive.readLine();
                     System.out.println("Server Message: " + move);
 
+                    //FOR O CELLS
+                    if(move.equals("1,O")){
+                        move ="1_O";
+                    }
+                    if(move.equals("2,O")){
+                        move ="2_O";
+                    }
+                    if(move.equals("3,O")){
+                        move ="3_O";
+                    }
+                    if(move.equals("4,O")){
+                        move ="4_O";
+                    }
+                    if(move.equals("5,O")){
+                        move ="5_O";
+                    }
+                    if(move.equals("6,O")){
+                        move ="6_O";
+                    }
+                    if(move.equals("7,O")){
+                        move ="7_O";
+                    }
+                    if(move.equals("8,O")){
+                        move ="8_O";
+                    }
+                    if(move.equals("9,O")){
+                        move ="9_O";
+                    }
+
+                    //NOW FOR X CELLS
+                    if(move.equals("1,X")){
+                        move ="1_X";
+                    }
+                    if(move.equals("2,X")){
+                        move ="2_X";
+                    }
+                    if(move.equals("3,X")){
+                        move ="3_X";
+                    }
+                    if(move.equals("4,X")){
+                        move ="4_X";
+                    }
+                    if(move.equals("5,X")){
+                        move ="5_X";
+                    }
+                    if(move.equals("6,X")){
+                        move ="6_X";
+                    }
+                    if(move.equals("7,X")){
+                        move ="7_X";
+                    }
+                    if(move.equals("8,X")){
+                        move ="8_X";
+                    }
+                    if(move.equals("9,X")){
+                        move ="9_X";
+                    }
 
 
                     if(move.equals("Receive_New_Game")){
@@ -150,7 +207,7 @@ public class GameServer implements Runnable {
             this.symbol = "X";
             //System.out.println(this.symbol);
            }
-           if(playerCount == 1){
+           else{
             playerCount++;
             this.symbol = "O";
             //System.out.println(this.symbol);
@@ -211,7 +268,8 @@ public class GameServer implements Runnable {
             // System.out.println("ACCEPTED1");
             try {
                 Socket player = serverSock.accept();
-                
+
+                System.out.println("count " + playerCount);
                 if(playerCount == 0 || playerCount == 1){
                 GameClient client = new GameClient(player);
                 client.sendSymbol();

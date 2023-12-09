@@ -73,6 +73,8 @@ public class GameGUI extends JFrame
     //used to connect GameClient
     private GameClient gameGUI;
 
+    private tictactoeboard board; 
+
 
 
     //used to initialize an new instance of GameGui class
@@ -81,6 +83,7 @@ public class GameGUI extends JFrame
         //set the title of the windo
         super("TicTacToe");
         //used to connect with the server methods
+        board = new tictactoeboard();
         startGameGUI();
     }
  
@@ -486,17 +489,28 @@ private class connectAction implements ActionListener {
                         //System.out.println("players's symbol " +buttonClicked);
                         // Disable the clicked button to prevent further clicks
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
- 
-                        //buttonClicked = (buttonClicked.equals("X")) ? "O" : "X";
 
-                        //switch to new player
-                        //playerTurn.switchTurn();
- 
-                        /*if (playerTurn.getTurnCount() == 8) {
-                            // Display the "Last Move" since there is exactly one move left
-                            String lastMoveDescription = "Last Move: Player " + Symbol + " at (" + clickedRow + ", " + clickedCol + ")";
-                            LastMOVE.setText(lastMoveDescription);
-                        }*/
+                        if (board.makeMove(getClickedRow(), getClickedCol())) {
+                            // Update the button with the current player's symbol
+                            boardButtons[getClickedRow()][getClickedCol()].setText(board.currentPlayerSymbol());
+                    
+                            // Disable the clicked button to prevent further clicks
+                            boardButtons[getClickedRow()][getClickedCol()].setEnabled(false);
+                    
+                            // Check for win or draw
+                            if (board.isWinner()) {
+                                // Handle game won by the current player
+                                JOptionPane.showMessageDialog(GameGUI.this, "Player " + board.currentPlayerSymbol() + " wins!");
+                                // ... reset the game or take any further actions ...
+                            } else if (board.isDraw()) {
+                                // Handle game drawn
+                                JOptionPane.showMessageDialog(GameGUI.this, "The game is a draw!");
+                                // ... reset the game or take any further actions ...
+                            } else {
+                                // Switch to the next player's turn
+                                board.switchPlayer();
+                            }
+                        }
                         int moveNumber = clickedRow * 3 + clickedCol + 1;
                         System.out.println(ClientSymbol);
 
@@ -567,87 +581,227 @@ public synchronized void receiveMsg(String move) {
             //System.out.println("Your symbol has been assigned o");
  
         }
-        //when someone clicks a button, they click col 1 row 1
-        if (move.startsWith("1")) {
-            //System.out.println("getting to 1 in gui");
-            opponentClickedRow = 0;
-            opponentClickCol = 0;
-            //need help here, how do we allow player X who clicked cell on their gui to have it show up as X on their gui AND as X on player O GUI ? 
-            //buttonClicked = opponent;
-            //System.out.println("The oppent has clicked a button and here is the symbol "+buttonClicked);
+
+        if (move.startsWith("1_O")) {
             
-            // ClientSymbol = opponent;
-            //updateButtonOnGUI(clickedCol,clickedCol);
+            if (boardButtons[0][0].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[0][0].setText("O");
 
-            //boardButtons[0][0].doClick();
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[0][0].setEnabled(false);
         }
-        //call click button function for specific button
-        //when someone clicks a button, they click col 1 row 2
-        else if (move.startsWith("2")) {
-            opponentClickedRow = 0;
-            opponentClickCol = 1;
-            buttonClicked = opponent;
-            boardButtons[0][1].doClick();
+    }
+        if (move.startsWith("2_O")) {
+                if (boardButtons[0][1].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[0][1].setText("O");
 
- 
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[0][1].setEnabled(false);
         }
-        //when someone clicks a button, they click col 1 row 3
-        else if (move.startsWith("3")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 2;
-            buttonClicked = opponent;
-            boardButtons[0][2].doClick();
- 
         }
-        //when someone clicks a button, they click col 2 row 1
-        else if (move.startsWith("4")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 0;
-            buttonClicked = opponent;            
-            boardButtons[1][0].doClick();
- 
+        if (move.startsWith("3_O")) {
+                if (boardButtons[0][2].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[0][2].setText("O");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[0][2].setEnabled(false);
         }
-        //when someone clicks a button, they click col 2 row 2
-        else if (move.startsWith("5")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 1;
-            buttonClicked = opponent;
-            boardButtons[1][1].doClick();
- 
+    }
+        if (move.startsWith("4_O")) {
+                if (boardButtons[1][0].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[1][0].setText("O");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[1][0].setEnabled(false);
         }
-        //when someone clicks a button, they click col 2 row 3
-        else if (move.startsWith("6")) {
-            opponentClickedRow = 1;
-            opponentClickCol = 2;
-            buttonClicked = opponent;
-            boardButtons[1][2].doClick();
- 
+    }
+        if (move.startsWith("5_O")) {
+                if (boardButtons[1][1].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[1][1].setText("O");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[1][1].setEnabled(false);
         }
-        //when someone clicks a button, they click col 3 row 1
-        else if (move.startsWith("7")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 0;
-            buttonClicked = opponent;
-            boardButtons[2][0].doClick();
- 
+    }
+        if (move.startsWith("6_O")) {
+                if (boardButtons[1][2].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[1][2].setText("O");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[1][2].setEnabled(false);
+        }    
+    }
+        if (move.startsWith("7_O")) {
+            if (boardButtons[2][0].getText().isEmpty()) {
+                // Update the button with the current player's symbol
+                //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                boardButtons[2][0].setText("O");
+
+                //buttonClicked = opponent;
+                //System.out.println("players's symbol " +buttonClicked);
+                // Disable the clicked button to prevent further clicks
+                boardButtons[2][0].setEnabled(false);
         }
-        //when someone clicks a button, they click col 3 row 2
-        else if (move.startsWith("8")) {
-            opponentClickedRow = 2;
-            opponentClickCol = 1;
-            buttonClicked = opponent;
-            boardButtons[2][1].doClick();
- 
+    } 
+        if (move.startsWith("8_O")) {
+            if (boardButtons[2][1].getText().isEmpty()) {
+                // Update the button with the current player's symbol
+                //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                boardButtons[2][1].setText("O");
+
+                //buttonClicked = opponent;
+                //System.out.println("players's symbol " +buttonClicked);
+                // Disable the clicked button to prevent further clicks
+                boardButtons[2][1].setEnabled(false);
         }
-        //when someone clicks a button, they click col 3 row 3
-        else if (move.startsWith("9")) {
-            opponentClickedRow = 2; 
-            opponentClickCol = 2;
-            buttonClicked = opponent;
-            boardButtons[2][2].doClick();
+        }    
+        if (move.startsWith("9_O")) {
+            if (boardButtons[2][2].getText().isEmpty()) {
+                // Update the button with the current player's symbol
+                //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                boardButtons[2][2].setText("O");
+
+                //buttonClicked = opponent;
+                //System.out.println("players's symbol " +buttonClicked);
+                // Disable the clicked button to prevent further clicks
+                boardButtons[2][2].setEnabled(false);
         }
-        buttonClicked = opponent;
-            boardButtons[opponentClickedRow][opponentClickCol].doClick();
+        }    
+
+        //FOR X 
+        if (move.startsWith("1_X")) {
+            
+            if (boardButtons[0][0].getText().isEmpty()) {
+                        // Update the button with the current player's symbol
+                        //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                        boardButtons[0][0].setText("X");
+    
+                        //buttonClicked = opponent;
+                        //System.out.println("players's symbol " +buttonClicked);
+                        // Disable the clicked button to prevent further clicks
+                        boardButtons[0][0].setEnabled(false);
+        }
+    }
+        if (move.startsWith("2_X")) {
+            if (boardButtons[0][1].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[0][1].setText("X");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[0][1].setEnabled(false);
+        }
+    }
+        if (move.startsWith("3_X")) {
+                if (boardButtons[0][2].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[0][2].setText("X");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[0][2].setEnabled(false);
+        }
+    }
+        if (move.startsWith("4_X")) {
+                if (boardButtons[1][0].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[1][0].setText("X");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[1][0].setEnabled(false);
+        }
+    }
+        if (move.startsWith("5_X")) {
+                if (boardButtons[1][1].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[1][1].setText("X");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[1][1].setEnabled(false);
+        }
+    }
+        if (move.startsWith("6_X")) {
+                if (boardButtons[1][2].getText().isEmpty()) {
+                    // Update the button with the current player's symbol
+                    //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                    boardButtons[1][2].setText("X");
+
+                    //buttonClicked = opponent;
+                    //System.out.println("players's symbol " +buttonClicked);
+                    // Disable the clicked button to prevent further clicks
+                    boardButtons[1][2].setEnabled(false);
+        }
+        }    
+        if (move.startsWith("7_X")) {
+            if (boardButtons[2][0].getText().isEmpty()) {
+                // Update the button with the current player's symbol
+                //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                boardButtons[2][0].setText("X");
+
+                //buttonClicked = opponent;
+                //System.out.println("players's symbol " +buttonClicked);
+                // Disable the clicked button to prevent further clicks
+                boardButtons[2][0].setEnabled(false);
+        }
+        }    
+        if (move.startsWith("8_X")) {
+            if (boardButtons[2][1].getText().isEmpty()) {
+                // Update the button with the current player's symbol
+                //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                boardButtons[2][1].setText("X");
+
+                //buttonClicked = opponent;
+                //System.out.println("players's symbol " +buttonClicked);
+                // Disable the clicked button to prevent further clicks
+                boardButtons[2][1].setEnabled(false);
+        }
+        }    
+        if (move.startsWith("9_X")) {
+            if (boardButtons[2][2].getText().isEmpty()) {
+                // Update the button with the current player's symbol
+                //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                boardButtons[2][2].setText("O");
+
+                //buttonClicked = opponent;
+                //System.out.println("players's symbol " +buttonClicked);
+                // Disable the clicked button to prevent further clicks
+                boardButtons[2][2].setEnabled(false);
+        }
+        }
 
 
         //if the server tell you that the opponent quit the game
@@ -673,12 +827,13 @@ public synchronized void receiveMsg(String move) {
 
  
         }
-    } catch (NumberFormatException e) {
+    } 
+    catch (NumberFormatException e) {
         // Handle the case where the move string is not in the expected format
         e.printStackTrace(); // Log the exception or handle it appropriately
     }
 }
-
+    
 private void updateButtonOnGUI(int row, int col) {
     // Check if the clicked button is empty
     if (boardButtons[row][col].getText().isEmpty()) {

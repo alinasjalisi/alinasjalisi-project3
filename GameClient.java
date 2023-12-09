@@ -57,47 +57,85 @@ public class GameClient{
                     String msg = read.readLine();
                     //use read for assigning synbil
  
-                    if (msg.equals("SYMBOL X")) {
-                        gameGUI.receiveMsg(msg);
-                    }
- 
                     if (msg.equals("SYMBOL O")) {
                         gameGUI.receiveMsg(msg);
                     }
-                    if (msg.equals("1")) {
+                    if (msg.equals("1_O")) {
                         gameGUI.receiveMsg(msg);
                     }
-                    if (msg.equals("2")) {
+                    if (msg.equals("2_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 1 row 3
-                    if (msg.equals("3")) {
+                    if (msg.equals("3_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 2 row 1
-                    if (msg.equals("4")) {
+                    if (msg.equals("4_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 2 row 2
-                    if (msg.equals("5")) {
+                    if (msg.equals("5_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 2 row 3
-                    if (msg.equals("6")) {
+                    if (msg.equals("6_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 3 row 1
-                    if (msg.equals("7")) {
+                    if (msg.equals("7_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 3 row 2
-                    if (msg.equals("8")) {
+                    if (msg.equals("8_O")) {
                         gameGUI.receiveMsg(msg);
                     }
                     //they click col 3 row 3
-                    if (msg.equals("9")) {
+                    if (msg.equals("9_O")) {
                         gameGUI.receiveMsg(msg);
                     }
+
+
+                    if (msg.equals("SYMBOL X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    if (msg.equals("1_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    if (msg.equals("2_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 1 row 3
+                    if (msg.equals("3_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 2 row 1
+                    if (msg.equals("4_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 2 row 2
+                    if (msg.equals("5_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 2 row 3
+                    if (msg.equals("6_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 3 row 1
+                    if (msg.equals("7_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 3 row 2
+                    if (msg.equals("8_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+                    //they click col 3 row 3
+                    if (msg.equals("9_X")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
+
+
                     //if msg == a click button that want to start a quit button, communite that you are starting new game
                     if (msg.equals("Quit_Game")) {
                         gameGUI.receiveMsg(msg);
