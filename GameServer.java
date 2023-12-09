@@ -15,7 +15,7 @@ public class GameServer implements Runnable {
     private List<String> upcomingMove;
     //outgoing = server sends out player 1's move to other player's local GUI
     //private List<String> outgoingMove;
-    public int tracker = 1;
+   // public int tracker = 1;
  
     //private static GameServer server;
  
@@ -58,9 +58,6 @@ public class GameServer implements Runnable {
              // Move the call to sendSymbol after initializing the send PrintWriter
              send = new PrintWriter(playerSocket.getOutputStream(), true);
              receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-             //sendSymbol();
-             //run();
-             //receive();
             }catch (IOException e) {
                 e.printStackTrace();  // Handle the exception appropriately, e.g., log it or exit
             }
@@ -81,6 +78,8 @@ public class GameServer implements Runnable {
                     String move = receive.readLine();
                     System.out.println("Server Message: " + move);
 
+
+
                     if(move.equals("Receive_New_Game")){
                         move = "New_Game";
 
@@ -89,14 +88,10 @@ public class GameServer implements Runnable {
                     if(move.equals("Recieve_Quit_Game")){
                         move = "Quit_Game";
                     }
-                    // if (move.equals(null)) {
-                        //removePlayer(this);
+                    
                     enqueueMove(move);
                     dequeueAll();
-                        // break;
-                    // }
- 
-                    // Broadcast the move to all connected clients
+                    
                 }
            
             }catch (IOException e) {
@@ -121,6 +116,7 @@ public class GameServer implements Runnable {
         public void removePlayer(GameClient player) {
             synchronized (secret) {
                 connectedClients.remove(player);
+                playerCount--;
             }
         }
  
@@ -147,14 +143,15 @@ public class GameServer implements Runnable {
         public synchronized void sendSymbol() {
             // if(tracker == 1 || tracker == 2){
             // tracker++;
-            playerCount++;
             System.out.println("Count: " + playerCount);
             //System.out.println("Count" + playerCount);
-            if(playerCount == 1){
+            if(playerCount == 0){
+            playerCount++;
             this.symbol = "X";
             //System.out.println(this.symbol);
            }
-           else{
+           if(playerCount == 1){
+            playerCount++;
             this.symbol = "O";
             //System.out.println(this.symbol);
            }
@@ -170,6 +167,7 @@ public class GameServer implements Runnable {
             //enqueueMove(move);
             //();
             upcomingMove.add(move);
+            dequeueAll();
     }
 
     public synchronized void dequeueMove(String move) {
@@ -214,16 +212,12 @@ public class GameServer implements Runnable {
             try {
                 Socket player = serverSock.accept();
                 
-                //only two ppl can join server
-                //if(playerCount == 0 || playerCount == 3){
-                // System.out.println("ACCEPTED");
-                //System.out.println("New Connection: " + player.getRemoteSocketAddress());
+                if(playerCount == 0 || playerCount == 1){
                 GameClient client = new GameClient(player);
                 client.sendSymbol();
-                playerCount++;
                 client.setServer(this); // Set the server using the method
                 client.start();
-               // }
+               }
             } catch (IOException e) {
                 e.printStackTrace();
             }

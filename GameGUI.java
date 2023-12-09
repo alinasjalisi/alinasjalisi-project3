@@ -458,6 +458,7 @@ private class connectAction implements ActionListener {
                 //Find the clicked button position
                 clickedRow = -1;
                 clickedCol = -1;
+                System.out.println("");
  
                 //iterate through board to find the clicked button
                 for (int i = 0; i < 3; i++) {
@@ -478,14 +479,16 @@ private class connectAction implements ActionListener {
                     // Check if the clicked button is empty
                     if (boardButtons[clickedRow][clickedCol].getText().isEmpty()) {
                         // Update the button with the current player's symbol
-                        System.out.println("opponent's symbol "+buttonClicked);
-                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(buttonClicked));
+                        //System.out.println("Should be the opponent's symbol " +buttonClicked);
+                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(ClientSymbol));
     
-                        buttonClicked = ClientSymbol;
-                        System.out.println("players's symbol "+buttonClicked);
+                        //buttonClicked = opponent;
+                        //System.out.println("players's symbol " +buttonClicked);
                         // Disable the clicked button to prevent further clicks
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
  
+                        //buttonClicked = (buttonClicked.equals("X")) ? "O" : "X";
+
                         //switch to new player
                         //playerTurn.switchTurn();
  
@@ -495,8 +498,16 @@ private class connectAction implements ActionListener {
                             LastMOVE.setText(lastMoveDescription);
                         }*/
                         int moveNumber = clickedRow * 3 + clickedCol + 1;
+                        System.out.println(ClientSymbol);
+
+                        String StringmoveNumber = String.valueOf(moveNumber);
+                        System.out.println("check string num: " + StringmoveNumber);
+
+
                         
-                        sendMove(String.valueOf(moveNumber));
+                        //have move numberand the symbol
+                        //1O, {0,0}, Symbol O made
+                        sendMove(StringmoveNumber+","+ClientSymbol);
                         //System.out.println(moveNumber);
                     }
                 }
@@ -522,50 +533,57 @@ public synchronized void receiveMsg(String move) {
        
         if (move.startsWith("SYMBOL X")) {
             // Handle the SYMBOL message, for example, update the player symbol
-            String symbolX = move.substring(move.indexOf("X"));
+            //String symbolX = move.substring(move.indexOf("X"));
             //updatePlayer(symbol);
             buttonClicked = "X";
+           // System.out.println("When symbol is assigend this is the button clicked " + buttonClicked);
             ClientSymbol = "X";
+          //  System.out.println("CHECKKKK: " + ClientSymbol);
             opponent = "O";
  
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: X");
             userSymbolTextArea.setText(ClientSymbol);
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
             //clickedButton.setText("X");
-            System.out.println("Your symbol has been assigned x");
+            //System.out.println("Your symbol has been assigned x");
  
         }
         //if the server tell you your move is y
         if (move.startsWith("SYMBOL O")) {
             // Handle the SYMBOL message, for example, update the player symbol
-            String symbolO = move.substring(move.indexOf("O"));
+            //String symbolO = move.substring(move.indexOf("O"));
             //updatePlayer(symbol);
             buttonClicked = "O";
+            //System.out.println("When symbol is assigend this is the button clicked " + buttonClicked);
+
             ClientSymbol = "O";
+            //System.out.println("CHECKKKK: " + ClientSymbol);
+
             opponent = "X";
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: O");
             userSymbolTextArea.setText(ClientSymbol);
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
             //clickedButton.setText("O");
-            System.out.println("Your symbol has been assigned o");
+            //System.out.println("Your symbol has been assigned o");
  
         }
         //when someone clicks a button, they click col 1 row 1
         if (move.startsWith("1")) {
-            System.out.println("getting to 1 in gui");
-            clickedRow = 0;
-            clickedCol = 0;
+            //System.out.println("getting to 1 in gui");
+            opponentClickedRow = 0;
+            opponentClickCol = 0;
             //need help here, how do we allow player X who clicked cell on their gui to have it show up as X on their gui AND as X on player O GUI ? 
-            buttonClicked = opponent;
-            System.out.println("new assigned clicked button symbol "+buttonClicked);
+            //buttonClicked = opponent;
+            //System.out.println("The oppent has clicked a button and here is the symbol "+buttonClicked);
             
             // ClientSymbol = opponent;
+            //updateButtonOnGUI(clickedCol,clickedCol);
 
-            boardButtons[0][0].doClick();
+            //boardButtons[0][0].doClick();
         }
         //call click button function for specific button
         //when someone clicks a button, they click col 1 row 2
-        if (move.startsWith("2")) {
+        else if (move.startsWith("2")) {
             opponentClickedRow = 0;
             opponentClickCol = 1;
             buttonClicked = opponent;
@@ -574,7 +592,7 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 1 row 3
-        if (move.startsWith("3")) {
+        else if (move.startsWith("3")) {
             opponentClickedRow = 1;
             opponentClickCol = 2;
             buttonClicked = opponent;
@@ -582,7 +600,7 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 2 row 1
-        if (move.startsWith("4")) {
+        else if (move.startsWith("4")) {
             opponentClickedRow = 1;
             opponentClickCol = 0;
             buttonClicked = opponent;            
@@ -590,7 +608,7 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 2 row 2
-        if (move.startsWith("5")) {
+        else if (move.startsWith("5")) {
             opponentClickedRow = 1;
             opponentClickCol = 1;
             buttonClicked = opponent;
@@ -598,7 +616,7 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 2 row 3
-        if (move.startsWith("6")) {
+        else if (move.startsWith("6")) {
             opponentClickedRow = 1;
             opponentClickCol = 2;
             buttonClicked = opponent;
@@ -606,7 +624,7 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 3 row 1
-        if (move.startsWith("7")) {
+        else if (move.startsWith("7")) {
             opponentClickedRow = 2;
             opponentClickCol = 0;
             buttonClicked = opponent;
@@ -614,7 +632,7 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 3 row 2
-        if (move.startsWith("8")) {
+        else if (move.startsWith("8")) {
             opponentClickedRow = 2;
             opponentClickCol = 1;
             buttonClicked = opponent;
@@ -622,12 +640,16 @@ public synchronized void receiveMsg(String move) {
  
         }
         //when someone clicks a button, they click col 3 row 3
-        if (move.startsWith("9")) {
+        else if (move.startsWith("9")) {
             opponentClickedRow = 2; 
             opponentClickCol = 2;
             buttonClicked = opponent;
             boardButtons[2][2].doClick();
         }
+        buttonClicked = opponent;
+            boardButtons[opponentClickedRow][opponentClickCol].doClick();
+
+
         //if the server tell you that the opponent quit the game
         if (move.startsWith("Quit_Game")) {
             //call methid that hande when someone quit a game
@@ -654,6 +676,20 @@ public synchronized void receiveMsg(String move) {
     } catch (NumberFormatException e) {
         // Handle the case where the move string is not in the expected format
         e.printStackTrace(); // Log the exception or handle it appropriately
+    }
+}
+
+private void updateButtonOnGUI(int row, int col) {
+    // Check if the clicked button is empty
+    if (boardButtons[row][col].getText().isEmpty()) {
+        // Update the button with the current player's symbol
+        boardButtons[row][col].setText(String.valueOf(buttonClicked));
+
+        // Disable the clicked button to prevent further clicks
+        boardButtons[row][col].setEnabled(false);
+
+        // Switch to the new player
+        buttonClicked = (buttonClicked.equals("X")) ? "O" : "X";
     }
 }
  

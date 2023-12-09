@@ -57,21 +57,16 @@ public class GameClient{
                     String msg = read.readLine();
                     //use read for assigning synbil
  
-                    //if msg == get assign the symbol x,tel gui your symbol is x
                     if (msg.equals("SYMBOL X")) {
                         gameGUI.receiveMsg(msg);
                     }
  
-                    //if msg == get assigned the symbol x, you tell gui you symbol is o
                     if (msg.equals("SYMBOL O")) {
                         gameGUI.receiveMsg(msg);
                     }
-                    //they click col 1 row 1
                     if (msg.equals("1")) {
-                        System.out.println("Getting to 1");
                         gameGUI.receiveMsg(msg);
                     }
-                    //they click col 1 row 2
                     if (msg.equals("2")) {
                         gameGUI.receiveMsg(msg);
                     }
