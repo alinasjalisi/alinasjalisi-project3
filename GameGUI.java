@@ -339,13 +339,13 @@ private class connectAction implements ActionListener {
         //get port
         int port = Integer.parseInt(PortNum.getText());
  
-        if(gameGUI != null){
-            System.out.println("Checking if is connected and then establish server in gui: " + port);
-            server = new GameServer(port);
-        }
- 
         //sent it to clientnetwork to be able to run
         gameGUI = new GameClient(host, port, GameGUI.this);
+        /*if(gameGUI.isConnected()){
+            System.out.println("SERVER MADE");
+            server = new GameServer(port);
+        }*/
+
  
        
         //try for error
@@ -354,6 +354,9 @@ private class connectAction implements ActionListener {
             //call checkConnect in ClientNetworking
             if (gameGUI.connectToServer())
             {
+                System.out.println("SERVER MAKING");
+                // server = new GameServer(port);
+                System.out.println("SERVER MADE");
                 //change properties for button
                 GameGUI.this.Connect_Disconnect.removeActionListener(this);
                 GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
@@ -531,7 +534,7 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("1")) {
             opponentClickedRow = 1;
             opponentClickCol = 1;
-            boardButtons[1][1].addActionListener(new BoardButtonClickListener());
+            boardButtons[0][0].addActionListener(new BoardButtonClickListener());
  
         }
         //call click button function for specific button
@@ -539,56 +542,56 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("2")) {
             opponentClickedRow = 1;
             opponentClickCol = 2;
-            boardButtons[1][2].addActionListener(new BoardButtonClickListener());
+            boardButtons[0][1].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 1 row 3
         if (move.startsWith("3")) {
             opponentClickedRow = 1;
             opponentClickCol = 3;
-            boardButtons[1][3].addActionListener(new BoardButtonClickListener());
+            boardButtons[0][2].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 2 row 1
         if (move.startsWith("4")) {
             opponentClickedRow = 2;
             opponentClickCol = 1;
-            boardButtons[2][1].addActionListener(new BoardButtonClickListener());
+            boardButtons[1][0].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 2 row 2
         if (move.startsWith("5")) {
             opponentClickedRow = 2;
             opponentClickCol = 2;
-            boardButtons[2][2].addActionListener(new BoardButtonClickListener());
+            boardButtons[1][1].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 2 row 3
         if (move.startsWith("6")) {
             opponentClickedRow = 2;
             opponentClickCol = 3;
-            boardButtons[2][3].addActionListener(new BoardButtonClickListener());
+            boardButtons[1][2].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 3 row 1
         if (move.startsWith("7")) {
             opponentClickedRow = 3;
             opponentClickCol = 1;
-            boardButtons[3][1].addActionListener(new BoardButtonClickListener());
+            boardButtons[2][0].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 3 row 2
         if (move.startsWith("8")) {
             opponentClickedRow = 3;
             opponentClickCol = 2;
-            boardButtons[3][2].addActionListener(new BoardButtonClickListener());
+            boardButtons[2][1].addActionListener(new BoardButtonClickListener());
  
         }
         //when someone clicks a button, they click col 3 row 3
         if (move.startsWith("9")) {
             opponentClickedRow = 3;
             opponentClickCol = 3;
-            boardButtons[3][3].addActionListener(new BoardButtonClickListener());
+            boardButtons[2][2].addActionListener(new BoardButtonClickListener());
  
         }
         //if the server tell you that the opponent quit the game
@@ -645,7 +648,7 @@ public synchronized void receiveMsg(String move) {
             System.out.println("send move in server from gui move mdae by player: " + msg);
            //tell server ur sendimg move from gui 
            //server needs to recieve so it can give to other player
-            server.enqueueMove(msg);
+            gameGUI.writeMessage(msg);
 
             //this is the method that gets whatever move was sent to server by player 1 and then "dequeues" it into the other person's gui thru server
             //server.dequeueMove(msg);
@@ -744,8 +747,8 @@ private class QuitGameButtonClickListener implements ActionListener {
     }
  
    
-    tictactoeboard.isWinner(ClientSymbol);
-    tictactoeboard.isDraw();
+    //tictactoeboard.isWinner(ClientSymbol);
+    //tictactoeboard.isDraw();
        
 }
  

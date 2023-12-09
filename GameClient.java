@@ -55,7 +55,7 @@ public class GameClient{
  
                     //create variable that store incoming message being passed in the server
                     String msg = read.readLine();
-                    //System.out.println(msg);
+                    System.out.println("MESSAGE: "+ msg);
                     //use read for assigning synbil
  
                     //if msg == get assign the symbol x,tel gui your symbol is x
@@ -146,12 +146,13 @@ public class GameClient{
  
        
     }
+
  
     public void writeMessage(String message) {
         if (isConnected()) {
             //add the message
             write.println(message);
-            System.out.println("recieved from server " + message);
+            // System.out.println("recieved from server " + message);
             //call a method in game server to be able to recieve the message
             //server.enqueueMove(message);
             //remove message

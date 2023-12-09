@@ -20,7 +20,9 @@ public class GameServer implements Runnable {
     //private static GameServer server;
  
     //store num of ppl in the server
-    public int playerCount = 0;
+    //public int playerCount = 0;
+
+    private GameClient gameClient;
  
     public GameServer(int serverPort) {
         try {
@@ -40,12 +42,15 @@ public class GameServer implements Runnable {
         private BufferedReader receive;
         private String symbol;
         private GameServer server;
+        //store num of ppl in the server
+        private int playerCount;
  
        
         //add the play to server and read the size joinning server
         //keep track of the client added
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
+            this.playerCount = 0;
             addPlayer(this);
             //System.out.println(connectedClients.size());
             try{
@@ -53,6 +58,7 @@ public class GameServer implements Runnable {
              send = new PrintWriter(playerSocket.getOutputStream(), true);
              receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
              sendSymbol();
+             run();
              //receive();
             }catch (IOException e) {
                 e.printStackTrace();  // Handle the exception appropriately, e.g., log it or exit
@@ -72,15 +78,15 @@ public class GameServer implements Runnable {
                 //listen for a move
                 while (true) {
                     String move = receive.readLine();
-                    if (move.equals(null)) {
+                    System.out.println("Server Message: " + move);
+                    // if (move.equals(null)) {
                         //removePlayer(this);
-                        enqueueMove(move);
-                        dequeueAll();
-                        break;
-                    }
+                    enqueueMove(move);
+                    dequeueMove();
+                        // break;
+                    // }
  
                     // Broadcast the move to all connected clients
-                    upcomingMove.add(move);
                 }
            
             }catch (IOException e) {
@@ -124,7 +130,7 @@ public class GameServer implements Runnable {
  
             System.out.println("Recieved move from gui update by user move" + move);
             enqueueMove(move);
-            dequeueAll();
+            dequeueMove();
  
         }
  
@@ -187,7 +193,7 @@ public class GameServer implements Runnable {
         upcomingMove.clear();
         for (GameClient player : connectedClients) {
             for (String move : moves) {
-                player.sendMove(move);
+                gameClient.sendMove(move);
             }
         }
     }
