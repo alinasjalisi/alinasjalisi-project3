@@ -47,6 +47,11 @@ public class GameGUI extends JFrame
     public int opponentClickedRow;
  
     public int opponentClickCol;
+
+    //for the clicked button to simultaneously show on both gui who clck which cell (ex X will show in cell 1 for both gui bc player x move there)
+    public String buttonClicked;
+    public int buttonClickedRow;
+    public int buttonClickedCol;
  
     //VARIABLE USED IN MIDDLE
     //store the 3x3 button
@@ -473,8 +478,11 @@ private class connectAction implements ActionListener {
                     // Check if the clicked button is empty
                     if (boardButtons[clickedRow][clickedCol].getText().isEmpty()) {
                         // Update the button with the current player's symbol
-                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(ClientSymbol));
-       
+                        System.out.println("opponent's symbol "+buttonClicked);
+                        boardButtons[clickedRow][clickedCol].setText(String.valueOf(buttonClicked));
+    
+                        buttonClicked = ClientSymbol;
+                        System.out.println("players's symbol "+buttonClicked);
                         // Disable the clicked button to prevent further clicks
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
  
@@ -516,6 +524,7 @@ public synchronized void receiveMsg(String move) {
             // Handle the SYMBOL message, for example, update the player symbol
             String symbolX = move.substring(move.indexOf("X"));
             //updatePlayer(symbol);
+            buttonClicked = "X";
             ClientSymbol = "X";
             opponent = "O";
  
@@ -531,6 +540,7 @@ public synchronized void receiveMsg(String move) {
             // Handle the SYMBOL message, for example, update the player symbol
             String symbolO = move.substring(move.indexOf("O"));
             //updatePlayer(symbol);
+            buttonClicked = "O";
             ClientSymbol = "O";
             opponent = "X";
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: O");
@@ -545,8 +555,12 @@ public synchronized void receiveMsg(String move) {
             System.out.println("getting to 1 in gui");
             clickedRow = 0;
             clickedCol = 0;
+            //need help here, how do we allow player X who clicked cell on their gui to have it show up as X on their gui AND as X on player O GUI ? 
+            buttonClicked = opponent;
+            System.out.println("new assigned clicked button symbol "+buttonClicked);
             
-            ClientSymbol = opponent;
+            // ClientSymbol = opponent;
+
             boardButtons[0][0].doClick();
         }
         //call click button function for specific button
@@ -554,15 +568,16 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("2")) {
             opponentClickedRow = 0;
             opponentClickCol = 1;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[0][1].doClick();
+
  
         }
         //when someone clicks a button, they click col 1 row 3
         if (move.startsWith("3")) {
             opponentClickedRow = 1;
             opponentClickCol = 2;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[0][2].doClick();
  
         }
@@ -570,7 +585,7 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("4")) {
             opponentClickedRow = 1;
             opponentClickCol = 0;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;            
             boardButtons[1][0].doClick();
  
         }
@@ -578,7 +593,7 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("5")) {
             opponentClickedRow = 1;
             opponentClickCol = 1;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[1][1].doClick();
  
         }
@@ -586,7 +601,7 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("6")) {
             opponentClickedRow = 1;
             opponentClickCol = 2;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[1][2].doClick();
  
         }
@@ -594,7 +609,7 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("7")) {
             opponentClickedRow = 2;
             opponentClickCol = 0;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[2][0].doClick();
  
         }
@@ -602,15 +617,15 @@ public synchronized void receiveMsg(String move) {
         if (move.startsWith("8")) {
             opponentClickedRow = 2;
             opponentClickCol = 1;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[2][1].doClick();
  
         }
         //when someone clicks a button, they click col 3 row 3
         if (move.startsWith("9")) {
-            opponentClickedRow = 2;
+            opponentClickedRow = 2; 
             opponentClickCol = 2;
-            ClientSymbol = opponent;
+            buttonClicked = opponent;
             boardButtons[2][2].doClick();
         }
         //if the server tell you that the opponent quit the game
