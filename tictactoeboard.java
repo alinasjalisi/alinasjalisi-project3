@@ -118,68 +118,96 @@ import javax.swing.JOptionPane;
 public class tictactoeboard {
 
     private String[][] board;
-    private String currentPlayerSymbol;
+    //private String currentPlayerSymbol;
 
     public tictactoeboard() {
         board = new String[3][3];
-        currentPlayerSymbol = "X";
+        //currentPlayerSymbol = "X";
         initializeBoard();
     }
 
     private void initializeBoard() {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                board[row][col] = "-";
+                board[row][col] = "";
             }
         }
     }
 
-    public boolean makeMove(int row, int col) {
-        if (row < 0 || row >= 3 || col < 0 || col >= 3 || !board[row][col].equals("-")) {
-            return false;
-        }
-        board[row][col] = currentPlayerSymbol;
-        currentPlayerSymbol = (currentPlayerSymbol.equals("X")) ? "O" : "X";
-        return true;
-    }
-
-    public boolean isWinner() {
-        // Check rows
-        for (int row = 0; row < 3; row++) {
-            if (board[row][0].equals(currentPlayerSymbol) && board[row][1].equals(currentPlayerSymbol) && board[row][2].equals(currentPlayerSymbol)) {
-                return true;
-            }
-        }
-
-        // Check columns
-        for (int col = 0; col < 3; col++) {
-            if (board[0][col].equals(currentPlayerSymbol) && board[1][col].equals(currentPlayerSymbol) && board[2][col].equals(currentPlayerSymbol)) {
-                return true;
-            }
-        }
-
-        // Check diagonals
-        if ((board[0][0].equals(currentPlayerSymbol) && board[1][1].equals(currentPlayerSymbol) && board[2][2].equals(currentPlayerSymbol)) ||
-                (board[0][2].equals(currentPlayerSymbol) && board[1][1].equals(currentPlayerSymbol) && board[2][0].equals(currentPlayerSymbol))) {
+    public boolean makeMove(int row, int col, String symbol) {
+        if (isValidMove(row, col)) {
+            board[row][col] = symbol;
             return true;
         }
-
         return false;
     }
 
-    public boolean isDraw() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                if (board[row][col].equals("-")) {
-                    return false;
+    // Check if the move is valid (within bounds and the cell is empty)
+    private boolean isValidMove(int row, int col) {
+        return row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col].isEmpty();
+    }
+
+    // Check if the current player has won
+    public boolean isWinner(String symbol) {
+        return checkRows(symbol) || checkColumns(symbol) || checkDiagonals(symbol);
+    }
+// Check if the symbol has won in any row
+    private boolean checkRows(String symbol) {
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0].equals(symbol) && board[i][1].equals(symbol) && board[i][2].equals(symbol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Check if the symbol has won in any column
+    private boolean checkColumns(String symbol) {
+        for (int i = 0; i < 3; i++) {
+            if (board[0][i].equals(symbol) && board[1][i].equals(symbol) && board[2][i].equals(symbol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Check if the symbol has won in either forward or backward diagonal / or \
+    private boolean checkDiagonals(String symbol) {
+        return (board[0][0].equals(symbol) && board[1][1].equals(symbol) && board[2][2].equals(symbol)) ||
+               (board[0][2].equals(symbol) && board[1][1].equals(symbol) && board[2][0].equals(symbol));
+    }
+
+    // Check if the board is full (a draw)
+    public boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j].isEmpty()) {
+                    return false; // There is an empty cell, the board is not full
                 }
             }
         }
-        return true;
+        return true; // All cells are filled, it's a draw
     }
 
+    public void draw() {
+        if (isBoardFull() && !isWinner("X") && !isWinner("O")) {
+            JOptionPane.showMessageDialog(null, "It's a draw!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    // Display a message dialog indicating the winner or a draw
+    public void displayResult(String symbol) {
+        if (isWinner(symbol)) {
+            JOptionPane.showMessageDialog(null, "Player " + symbol + " wins!");
+        } else {
+            JOptionPane.showMessageDialog(null, "It's a draw!");
+        }
+    }
+
+    // Get the current state of the board
     public String[][] getBoard() {
         return board;
     }
 
+    
 }
