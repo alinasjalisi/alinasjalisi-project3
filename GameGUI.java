@@ -507,7 +507,6 @@ public synchronized void receiveMsg(String move) {
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: O");
             userSymbolTextArea.setText(ClientSymbol);
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
- 
         }
 
         if (move.startsWith("1_O")) {
@@ -517,7 +516,8 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[0][0].setEnabled(false);
                     ClickCount++;
                     LastMOVE.setText("Player O made\n"+ "a move to \n" + "row 1 col 1");
-                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 40));
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+                    //statusTextArea.setText("                                                   Player X turn");
                     
 
 
@@ -527,7 +527,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[0][1].getText().isEmpty()) {
                     boardButtons[0][1].setText("O");
                     boardButtons[0][1].setEnabled(false);
-                    LastMOVE.setText("Player O made a move to row 1 col 2");
+                    LastMOVE.setText("Player O made \n"+ "a move to \n"+ "row 1 col 2");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                     ClickCount++;
 
@@ -537,7 +538,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[0][2].getText().isEmpty()) {
                     boardButtons[0][2].setText("O");
                     boardButtons[0][2].setEnabled(false);
-                    LastMOVE.setText("Player O made a move to row 1 col 3");
+                    LastMOVE.setText("Player O made\n" + "a move to\n"+ "row 1 col 3");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                     ClickCount++;
 
@@ -547,7 +549,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][0].getText().isEmpty()) {
                     boardButtons[1][0].setText("O");
                     boardButtons[1][0].setEnabled(false);
-                    LastMOVE.setText("Player O made a move to row 2 col 1");
+                    LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 1");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                     ClickCount++;
 
@@ -557,7 +560,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][1].getText().isEmpty()) {
                     boardButtons[1][1].setText("O");
                     boardButtons[1][1].setEnabled(false);
-                    LastMOVE.setText("Player O made a move to row 2 col 2");
+                    LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 2");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                     ClickCount++;
 
@@ -567,7 +571,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][2].getText().isEmpty()) {
                     boardButtons[1][2].setText("O");
                     boardButtons[1][2].setEnabled(false);
-                    LastMOVE.setText("Player O made a move to row 2 col 3");
+                    LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 3");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                     ClickCount++;
 
@@ -577,7 +582,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][0].getText().isEmpty()) {
                 boardButtons[2][0].setText("O");
                 boardButtons[2][0].setEnabled(false);
-                LastMOVE.setText("Player O made a move to row 3 col 1");
+                LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 1");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                 ClickCount++;
 
@@ -587,7 +593,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][1].getText().isEmpty()) {
                 boardButtons[2][1].setText("O");
                 boardButtons[2][1].setEnabled(false);
-                LastMOVE.setText("Player O made a move to row 3 col 2");
+                LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 2");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                 ClickCount++;
 
@@ -597,7 +604,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][2].getText().isEmpty()) {
                 boardButtons[2][2].setText("O");
                 boardButtons[2][2].setEnabled(false);
-                LastMOVE.setText("Player O made a move to row 3 col 3");
+                LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 3");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
                 ClickCount++;
 
@@ -609,7 +617,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[0][0].getText().isEmpty()) {
                 boardButtons[0][0].setText("X");
                 boardButtons[0][0].setEnabled(false);
-                LastMOVE.setText("Player X made a move to row 1 col 1");
+                LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 1");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
     }
@@ -617,7 +626,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[0][1].getText().isEmpty()) {
                 boardButtons[0][1].setText("X");
                 boardButtons[0][1].setEnabled(false);
-                LastMOVE.setText("Player X made a move to row 1 col 2");
+                LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 2");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
     }
@@ -625,7 +635,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[0][2].getText().isEmpty()) {
                     boardButtons[0][2].setText("X");
                     boardButtons[0][2].setEnabled(false);
-                    LastMOVE.setText("Player X made a move to row 1 col 3");
+                    LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 3");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
     }
@@ -633,7 +644,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][0].getText().isEmpty()) {
                 boardButtons[1][0].setText("X");
                 boardButtons[1][0].setEnabled(false);
-             LastMOVE.setText("Player X made a move to row 2 col 1");
+             LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 1");
+             LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
     }
@@ -641,7 +653,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][1].getText().isEmpty()) {
                     boardButtons[1][1].setText("X");
                     boardButtons[1][1].setEnabled(false);
-                    LastMOVE.setText("Player X made a move to row 2 col 2");
+                    LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 2");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
     }
@@ -649,7 +662,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][2].getText().isEmpty()) {
                     boardButtons[1][2].setText("X");
                     boardButtons[1][2].setEnabled(false);
-                    LastMOVE.setText("Player X made a move to row 2 col 3");
+                    LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 3");
+                    LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
         }    
@@ -657,7 +671,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][0].getText().isEmpty()) {
                 boardButtons[2][0].setText("X");
                 boardButtons[2][0].setEnabled(false);
-                LastMOVE.setText("Player X made a move to row 3 col 1");
+                LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 1");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
         }    
@@ -665,7 +680,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][1].getText().isEmpty()) {
                 boardButtons[2][1].setText("X");
                 boardButtons[2][1].setEnabled(false);
-                LastMOVE.setText("Player X made a move to row 3 col 2");
+                LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 2");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
         }    
@@ -673,7 +689,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][2].getText().isEmpty()) {
                 boardButtons[2][2].setText("O");
                 boardButtons[2][2].setEnabled(false);
-                LastMOVE.setText("Player X made a move to row 3 col 3");
+                LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 3");
+                LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
         }
         }
@@ -685,6 +702,8 @@ public synchronized void receiveMsg(String move) {
             enableAllButtons();
             JOptionPane.showMessageDialog(GameGUI.this, "Player Has Quit Game");
             userSymbolTextArea.setText (" ");
+            LastMOVE.setText("you quit the game,\n"+ "please disconnect\n"+" from server \n"+"and reconnect to\n"+ "play another game!");
+            LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
             gameGUI.disconnect();
 
 
@@ -694,10 +713,12 @@ public synchronized void receiveMsg(String move) {
             resetBoardPanel();
             enableAllButtons();            
             JOptionPane.showMessageDialog(GameGUI.this, "Player Has Started A New Game");
+            LastMOVE.setText("a new game is\n"+" beginning player X\n"+" gets the first move!");
+            LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
 
  
         }
-    } 
+    }  
     catch (NumberFormatException e) {
         // Handle the case where the move string is not in the expected format
         e.printStackTrace(); // Log the exception or handle it appropriately
