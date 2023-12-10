@@ -1,5 +1,0 @@
-as of tues nov 28 here are each member's assigned parts to attempt this week:
-
-gabby - server socket in game client, connect action listener, update symbol, newgame and quit game buttons
-alina - random assign symbol, listeners for game board buttons, editing tictactoe board
-sere - send and receive method
