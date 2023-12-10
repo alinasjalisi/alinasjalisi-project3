@@ -38,6 +38,7 @@ public class GameGUI extends JFrame
     private JLabel yourSymbolLabel;
     //set the actual symbol either x or y
     private JTextArea userSymbolTextArea;
+    private JTextArea statusTextArea = new JTextArea(); 
  
     //store the symbol being sent in my server
     public String ClientSymbol ;
@@ -274,18 +275,17 @@ private JPanel createTop(){
     private JPanel createMiddlePanel(){
         JPanel middlePanel = new JPanel(new BorderLayout());
  
-        JTextArea statusTextArea = new JTextArea();
         statusTextArea.setEditable(false);
         statusTextArea.setFont(new Font(Font.SERIF, Font.PLAIN, 18)); // Adjusted font size
  
         //COMEBACK
-        if(gameGUI == null){
-            statusTextArea.setText("                                                   Player's  " + " " + " turn");
+        /*if(gameGUI == null){
+            statusTextArea.setText("                                                   Player's  " + ClientSymbol + " turn");
  
         }//COMEBACK
         else{
         statusTextArea.setText("                                                   Player's  " + " turn");
-        }
+        }*/
         middlePanel.add(statusTextArea, BorderLayout.NORTH);
  
         JPanel boardPanel = new JPanel(new GridLayout(3, 3));
@@ -493,6 +493,7 @@ public synchronized void receiveMsg(String move) {
  
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: X");
             userSymbolTextArea.setText(ClientSymbol);
+            statusTextArea.setText("                                                   Player " + opponent + " turn");
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
  
         }
@@ -501,11 +502,11 @@ public synchronized void receiveMsg(String move) {
             buttonClicked = "O";
 
             ClientSymbol = "O";
-            //System.out.println("CHECKKKK: " + ClientSymbol);
 
             opponent = "X";
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: O");
             userSymbolTextArea.setText(ClientSymbol);
+            statusTextArea.setText("                                                   Player " + ClientSymbol + " turn");
             userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
         }
 
