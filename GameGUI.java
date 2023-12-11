@@ -875,6 +875,7 @@ private synchronized void winCheck(){
     }
     else{
         if(ClickCount == 9){
+            sendMove("Draw");
         }
     }
 }

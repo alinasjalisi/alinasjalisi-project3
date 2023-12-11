@@ -175,6 +175,10 @@ public class GameServer implements Runnable {
                     if(move.equals("Recieve_Quit_Game")){
                         move = "Quit_Game";
                     }
+
+                    if(move.equals("Draw")){
+                        move = "D_R_A_W";
+                    }
                     
                     enqueueMove(move);
                     dequeueAll();

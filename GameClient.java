@@ -141,6 +141,9 @@ public class GameClient{
                     if (msg.equals("New_Game")) {
                         gameGUI.receiveMsg(msg);
                     }
+                    if(msg.equals("D_R_A_W")){
+                        gameGUI.receiveMsg(msg);
+                    }
                     if (msg == null) {
                         //not correctly connected to the server
                         check = false;
