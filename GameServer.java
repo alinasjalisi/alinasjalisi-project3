@@ -11,16 +11,8 @@ public class GameServer implements Runnable {
     private final Object secret = new Object();
     private ServerSocket serverSock;
     private List<GameClient> connectedClients;
-    //upcoming = move in local gui sent from player 1 to server
     private List<String> upcomingMove;
-    //outgoing = server sends out player 1's move to other player's local GUI
-    //private List<String> outgoingMove;
-   // public int tracker = 1;
- 
-    //private static GameServer server;
- 
-    //store num of ppl in the server
-    //public int playerCount = 0;
+   
 
     private GameClient gameClient;
 
@@ -45,11 +37,7 @@ public class GameServer implements Runnable {
         private BufferedReader receive;
         private String symbol;
         private GameServer server;
-        //store num of ppl in the server
  
-       
-        //add the play to server and read the size joinning server
-        //keep track of the client added
         public GameClient(Socket playerSocket) {
             this.playerSocket = playerSocket;
             addPlayer(this);
@@ -58,7 +46,7 @@ public class GameServer implements Runnable {
              send = new PrintWriter(playerSocket.getOutputStream(), true);
              receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
             }catch (IOException e) {
-                e.printStackTrace();  // Handle the exception appropriately, e.g., log it or exit
+                e.printStackTrace(); 
             }
         }
  
@@ -68,11 +56,7 @@ public class GameServer implements Runnable {
             try {
                 send = new PrintWriter(playerSocket.getOutputStream(), true);
                 receive = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()));
-                //Send the assigned symbol to the GameClient taht then get display in us
-                //send.println("SYMBOL:" + this.symbol);
-                //when client connect you just send whatever
- 
-                //listen for a move
+
                 while (true) {
                     String move = receive.readLine();
 
@@ -193,35 +177,36 @@ public class GameServer implements Runnable {
         }
  
         public synchronized void sendSymbol() {
-            // if(tracker == 1 || tracker == 2){
-            // tracker++;
             if(playerCount == 0){
             playerCount++;
             this.symbol = "X";
            }
            else{
-            playerCount++;
+            playerCount = 5;
             this.symbol = "O";
            }
+           send.println("SYMBOL " + this.symbol);
         }
 
         public synchronized void allPlay(){
 
-            if(playerCount == 2){
-                playerCount = 3;
-                System.out.println("ANOTHERCOUNT: " + playerCount);
+            if(playerCount == 1){
                 send.println("TWO_PLAYER_CONNECTED");
+                broadcastMessage("TWO_PLAYER_CONNECTED");
             }
             
         }
+
+        private synchronized void broadcastMessage(String message) {
+            for (GameClient player : connectedClients) {
+                player.sendMove(message);
+            }
+        }
     }
-//}
  
     //take in all teh message
     public synchronized void enqueueMove(String move) {
         System.out.println("Recieved move from gui...we sent player 1 move from their gui to server" + move);
-            //enqueueMove(move);
-            //();
             upcomingMove.add(move);
             dequeueAll();
     }
@@ -234,13 +219,9 @@ public class GameServer implements Runnable {
             for(String d : upcomingMove) {
                 upcomingMove.remove(move);
             }
-            //enqueueMove(d);
-            //dequeueAll();
-//dequeu ones you just added to upcoming move list from outgoing moves. thats what updated on other gui
 
         System.out.println("we got player 1 move from their gui in our gui thru server" + move);
-            //enqueueMove(move);
-            //();
+
             upcomingMove.get(0);
             
     }
@@ -264,19 +245,15 @@ public class GameServer implements Runnable {
     }
     public void serve() {
         while (true) {
-            // System.out.println("ACCEPTED1");
             try {
                 Socket player = serverSock.accept();
 
                 System.out.println("count " + playerCount);
                 if(playerCount == 0 || playerCount == 1){
                 GameClient client = new GameClient(player);
+                client.allPlay();
                 client.sendSymbol();
-                System.out.println("PLay count: " + playerCount);
-                if(playerCount == 1 || playerCount == 2){
-                //\client.allPlay();
-                }
-                client.setServer(this); // Set the server using the method
+                client.setServer(this); 
                 client.start();
                }
             } catch (IOException e) {
@@ -294,7 +271,5 @@ public class GameServer implements Runnable {
         int serverPort = 1234;
         GameServer server = new GameServer(serverPort);
         server.serve();
-        // Thread serverThread = new Thread(server);
-        // serverThread.start();
     }
 }

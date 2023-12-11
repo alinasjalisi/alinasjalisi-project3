@@ -346,7 +346,7 @@ private class connectAction implements ActionListener {
                 GameGUI.this.Connect_Disconnect.removeActionListener(this);
                 GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
                 GameGUI.this.Connect_Disconnect.setText("Disconnect");
-                JOptionPane.showMessageDialog(GameGUI.this, "YOU HAVE CONNECTED TO THE SERVER");
+                //JOptionPane.showMessageDialog(GameGUI.this, "YOU HAVE CONNECTED TO THE SERVER");
 
  
                 //then have the player assigned a random symbol
@@ -509,7 +509,8 @@ public synchronized void receiveMsg(String move) {
 
         if(move.startsWith("TWO_PLAYER_CONNECTED")){
             enableAllButtons();
-            sendMove("TWO_PLAYER_CONNECTED");
+
+            //sendMove("TWO_PLAYER_CONNECTED");
 
         }
 
@@ -803,6 +804,8 @@ private class NewGameButtonClickListener implements ActionListener{
  
 //allow for al the button that were previously disable for the to be able use
 private void enableAllButtons(){
+
+    
     // Enable buttons that were previously disabled due to user clicks
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {

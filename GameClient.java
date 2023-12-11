@@ -137,10 +137,7 @@ public class GameClient{
                     if(msg.equals("TWO_PLAYER_CONNECTED")){
                         System.out.println("GOTHERE");
                         gameGUI.receiveMsg(msg);
-                        
                     }
-
-                    
 
                     //if msg == a click button that want to start a quit button, communite that you are starting new game
                     if (msg.equals("Quit_Game")) {
