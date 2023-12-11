@@ -9,9 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
- 
-// QUIT GAME leaves the server
-// NEW GAME creates new game with the same person
+
  
 public class GameGUI extends JFrame
 {
@@ -77,11 +75,20 @@ public class GameGUI extends JFrame
 
     private tictactoeboard board; 
 
+    private int HWIN1;
+    private int HWIN2;
+    private int HWIN3;
+
+    private int VWIN1;
+    private int VWIN2;
+    private int VWIN3;
+
+    private int DWIN1;
+    private int DWIN2;
+
     private int ClickCount;
 
-
-
-    //used to initialize an new instance of GameGui class
+   //used to initialize an new instance of GameGui class
     public GameGUI()
     {
         //set the title of the windo
@@ -91,7 +98,6 @@ public class GameGUI extends JFrame
         startGameGUI();
     }
  
-    //ALL DONE
     //used for initializing and orgarning the physical stuff
     private void startGameGUI()
     {
@@ -102,7 +108,7 @@ public class GameGUI extends JFrame
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
  
-        // Store properties for the top panel
+        // store properties for the top panel
         JPanel TFrame = new JPanel(new GridBagLayout());
         GridBagConstraints top_settings = new GridBagConstraints();
  
@@ -120,7 +126,6 @@ public class GameGUI extends JFrame
         GridBagConstraints left_settings = new GridBagConstraints();
  
         //create, configuring and add the left part of the game gui in main panle
- 
         JPanel Left_part = createLeftPanel();
         left_settings.gridx = 0;
         left_settings.gridy = 0;
@@ -147,7 +152,7 @@ public class GameGUI extends JFrame
         JPanel right_part = createRightPanel();
         right_settings.gridx = 1;
         right_settings.gridy = 1;
-        right_settings.weightx = 0.2; // Adjust this value as needed
+        right_settings.weightx = 0.2;
         right_settings.weighty = 1.0;
         right_settings.fill = GridBagConstraints.BOTH;
         RFrame.add(right_part, right_settings);
@@ -172,14 +177,11 @@ public class GameGUI extends JFrame
        add(BFrame, BorderLayout.SOUTH);
    }
  
-//COMEBACK
 //store properties for the right part of the panel
 private JPanel createRightPanel() {
-   
  
     JPanel rightPanel = new JPanel(new GridLayout(4, 1));
-   
- 
+
     // Create a JLabel for the "Options" section
     optionsLabel = new JLabel("Options:");
     optionsLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -192,7 +194,6 @@ private JPanel createRightPanel() {
     newGameButton = new JButton("New Game");
     //store the size of the button
     newGameButton.setPreferredSize(new Dimension(100, 20));
-    //COMEBACK
     //call the disconnect action button after click so the other can be turned on
     newGameButton.addActionListener(new NewGameButtonClickListener());
     //add the button to frame
@@ -202,21 +203,17 @@ private JPanel createRightPanel() {
     quitGameButton = new JButton("Quit Game");
     //store the size of the buttob
     quitGameButton.setPreferredSize(new Dimension(100, 20));
-    //COMEBACK
     quitGameButton.addActionListener(new QuitGameButtonClickListener());
  
     optionsButtonsPanel.add(quitGameButton);
     //class so when clicked it reset the board and you leave the server
- 
-    // COMEBACK
-    yourSymbolLabel = new JLabel("Your symbol is:");
+     yourSymbolLabel = new JLabel("Your symbol is:");
     yourSymbolLabel.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
     optionsButtonsPanel.add(yourSymbolLabel);
  
     // Add the options buttons panel to the right panel
     rightPanel.add(optionsButtonsPanel, BorderLayout.CENTER);
  
-    //COMEBACK
     // Create a JTextArea to display the user's symbol
     userSymbolTextArea = new JTextArea();
     userSymbolTextArea.setEditable(false);
@@ -229,7 +226,6 @@ private JPanel createRightPanel() {
     return rightPanel;
 }
  
-//DONE FOR NOW
 // Create a panel to display the last move
 private JPanel createLeftPanel() {
     JPanel leftPanel = new JPanel(new BorderLayout());
@@ -247,7 +243,6 @@ private JPanel createLeftPanel() {
     return leftPanel;
 }
  
-//ALL DONE
 //store properties for top of the panel
 private JPanel createTop(){
  
@@ -272,7 +267,6 @@ private JPanel createTop(){
  
     }
  
-    //NEEDS FIXED
     private JPanel createMiddlePanel(){
         JPanel middlePanel = new JPanel(new BorderLayout());
  
@@ -300,7 +294,6 @@ private JPanel createTop(){
         return middlePanel;
     }
  
-//ALLDONE
 //store properties in the botton section of gui
 private JPanel createBottomPanel()
 {
@@ -322,7 +315,6 @@ private JPanel createBottomPanel()
     return bottomPanel;
 }
  
-//ALLDONE
 //does the action when you click the connect button
 private class connectAction implements ActionListener {
    
@@ -339,20 +331,10 @@ private class connectAction implements ActionListener {
             //call checkConnect in ClientNetworking
             if (gameGUI.connectToServer())
             {
-                System.out.println("SERVER MAKING");
-                // server = new GameServer(port);
-                System.out.println("SERVER MADE");
-                //change properties for button
                 GameGUI.this.Connect_Disconnect.removeActionListener(this);
                 GameGUI.this.Connect_Disconnect.addActionListener(new disconnectAction());
                 GameGUI.this.Connect_Disconnect.setText("Disconnect");
-                //JOptionPane.showMessageDialog(GameGUI.this, "YOU HAVE CONNECTED TO THE SERVER");
-
- 
-                //then have the player assigned a random symbol
-                //gameGUI.assignSymbol();
- 
-                String assignedSymbol = ClientSymbol;
+                
             }
         }
             //when error but a try catch saying ipaddress doesn't exist
@@ -361,7 +343,6 @@ private class connectAction implements ActionListener {
             }
         }
     }
-    //ALL DONE
     //disconnect properties
     private class disconnectAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
@@ -376,7 +357,6 @@ private class connectAction implements ActionListener {
         }
     }
  
-    //ALLDONE FOR NOW
     // new method to reset boardPanel
     private void resetBoardPanel()
     {
@@ -389,31 +369,16 @@ private class connectAction implements ActionListener {
             }
         }
     }
-    //COMEBACK
     // new class for board button click listener
     private class BoardButtonClickListener implements ActionListener{
-
-        //System.out.println("Getting in the button action");
-        //getter for row and colo
- 
-        public int getClickedRow() {
-            return clickedRow;
-        }
-   
-        public int getClickedCol() {
-            return clickedCol;
-        }
  
         public void actionPerformed(ActionEvent e) {
-                ClickCount++;
 
                 clickedButton = (JButton) e.getSource();
  
                 //Find the clicked button position
                 clickedRow = -1;
-                clickedCol = -1;
-                System.out.println("");
- 
+                clickedCol = -1; 
                 //iterate through board to find the clicked button
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
@@ -431,58 +396,21 @@ private class connectAction implements ActionListener {
                         boardButtons[clickedRow][clickedCol].setText(String.valueOf(ClientSymbol));
                         boardButtons[clickedRow][clickedCol].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
-
-                        /*if (board.makeMove(getClickedRow(), getClickedCol())) {
-                            boardButtons[getClickedRow()][getClickedCol()].setText(board.currentPlayerSymbol());
-                            boardButtons[getClickedRow()][getClickedCol()].setEnabled(false);
-                    
-                            // Check for win or draw
-                            if (board.isWinner()) {
-                                JOptionPane.showMessageDialog(GameGUI.this, "Player " + board.currentPlayerSymbol() + " wins!");
-                            } else if (board.isDraw()) {
-                                JOptionPane.showMessageDialog(GameGUI.this, "The game is a draw!");
-                            } else {
-                                board.switchPlayer();
-                            }
-                        }*/
-                        if (board.isWinner(ClientSymbol)) {
-                        System.out.println("SXDCFVGBHNJKLKJHFDXSDFGHJK");
-                            // Display winner and take any necessary actions...
-                            JOptionPane.showMessageDialog(GameGUI.this, "Player " + ClientSymbol + " wins!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-                            // Add logic for post-win actions...
-                        } else {
-                            // Check if it's a draw
-                            board.draw();
-                        }
-
                         
                         int moveNumber = clickedRow * 3 + clickedCol + 1;
-                        System.out.println(ClientSymbol);
 
                         String StringmoveNumber = String.valueOf(moveNumber);
-                        System.out.println("check string num: " + StringmoveNumber);
                         statusTextArea.setText("                                                   Player " + opponent + " turn");
+                        ClickCount++;
                         sendMove(StringmoveNumber+","+ClientSymbol);
                     }
                 }
         }
     }
 
-
-
-       
  
-//COMEBACK
-//update the player symbol
-public void getPlayerSymbol(String symbol)
-{
-    userSymbolTextArea.setText(symbol);
-}
- 
-//COMEBACK
 public synchronized void receiveMsg(String move) {
     try {
-        String move1 = move;
        
         if (move.startsWith("SYMBOL X")) {
             buttonClicked = "X";
@@ -498,10 +426,9 @@ public synchronized void receiveMsg(String move) {
         //if the server tell you your move is y
         if (move.startsWith("SYMBOL O")) {
             buttonClicked = "O";
-
             ClientSymbol = "O";
-
             opponent = "X";
+
             JOptionPane.showMessageDialog(GameGUI.this, "Your symbol is: O");
             userSymbolTextArea.setText(ClientSymbol);
             statusTextArea.setText("                                                   Player " + ClientSymbol + " turn");
@@ -513,21 +440,21 @@ public synchronized void receiveMsg(String move) {
 
         }
 
-        /*if(move.startsWith("NOT_TWO_PLAYER_CONNECTED")){
-            disableAllButtons();
-        }*/
-
         if (move.startsWith("1_O")) {
             
             if (boardButtons[0][0].getText().isEmpty()) {
                     boardButtons[0][0].setText("O");
                     boardButtons[0][0].setEnabled(false);
                     boardButtons[0][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-
+                    HWIN1++;
+                    VWIN1++;
+                    DWIN1++;
                     ClickCount++;
+                    winCheck();
+
+                    
                     LastMOVE.setText("Player O made\n"+ "a move to \n" + "row 1 col 1");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
-                    System.out.println("fghjk");
                     statusTextArea.setText("                                                   Player X's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
         }
@@ -537,27 +464,34 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[0][1].setText("O");
                     boardButtons[0][1].setEnabled(false);
                     boardButtons[0][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN1++;
+                    VWIN2++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player O made \n"+ "a move to \n"+ "row 1 col 2");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
 
-                    ClickCount++;
 
         }
-        }
+    }
         if (move.startsWith("3_O")) {
                 if (boardButtons[0][2].getText().isEmpty()) {
                     boardButtons[0][2].setText("O");
                     boardButtons[0][2].setEnabled(false);
                     boardButtons[0][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN1++;
+                    VWIN3++;
+                    DWIN2++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player O made\n" + "a move to\n"+ "row 1 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                    ClickCount++;
 
         }
     }
@@ -566,13 +500,15 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[1][0].setText("O");
                     boardButtons[1][0].setEnabled(false);
                     boardButtons[1][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN2++;
+                    VWIN1++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 1");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                    ClickCount++;
-
         }
     }
         if (move.startsWith("5_O")) {
@@ -580,12 +516,17 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[1][1].setText("O");
                     boardButtons[1][1].setEnabled(false);
                     boardButtons[1][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN2++;
+                    VWIN2++;
+                    DWIN1++;
+                    DWIN2++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 2");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                    ClickCount++;
 
         }
     }
@@ -594,12 +535,15 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[1][2].setText("O");
                     boardButtons[1][2].setEnabled(false);
                     boardButtons[1][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN2++;
+                    VWIN3++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                    ClickCount++;
 
         }    
     }
@@ -608,12 +552,16 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[2][0].setText("O");
                 boardButtons[2][0].setEnabled(false);
                 boardButtons[2][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN3++;
+                VWIN1++;
+                DWIN2++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 1");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player X's turn");
                 userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                ClickCount++;
 
         }
     } 
@@ -622,26 +570,34 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[2][1].setText("O");
                 boardButtons[2][1].setEnabled(false);
                 boardButtons[2][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN3++;
+                VWIN2++;
+                ClickCount++;
+                winCheck();
+
 
                 LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 2");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player X's turn");
                 userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                ClickCount++;
 
         }
-        }    
+    }    
         if (move.startsWith("9_O")) {
             if (boardButtons[2][2].getText().isEmpty()) {
                 boardButtons[2][2].setText("O");
                 boardButtons[2][2].setEnabled(false);
                 boardButtons[2][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN3++;
+                VWIN3++;
+                DWIN1++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 3");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player X's turn");
                 userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
-                ClickCount++;
 
         }
     }    
@@ -652,9 +608,13 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[0][0].setText("X");
                 boardButtons[0][0].setEnabled(false);
                 boardButtons[0][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN1++;
+                VWIN1++;
+                DWIN1++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 1");
-                System.out.println("sdfghjk");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
                 userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
@@ -665,6 +625,10 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[0][1].setText("X");
                 boardButtons[0][1].setEnabled(false);
                 boardButtons[0][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN1++;
+                VWIN2++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 2");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -677,6 +641,11 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[0][2].setText("X");
                     boardButtons[0][2].setEnabled(false);
                     boardButtons[0][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN1++;
+                    VWIN3++;
+                    DWIN2++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -689,6 +658,11 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[1][0].setText("X");
                 boardButtons[1][0].setEnabled(false);
                 boardButtons[1][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN2++;
+                VWIN1++;
+                ClickCount++;
+                winCheck();
+
 
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 1");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -701,6 +675,13 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[1][1].setText("X");
                     boardButtons[1][1].setEnabled(false);
                     boardButtons[1][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN2++;
+                    VWIN2++;
+                    DWIN1++;
+                    DWIN2++;
+                    ClickCount++;
+                    winCheck();
+
 
                     LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 2");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -713,10 +694,14 @@ public synchronized void receiveMsg(String move) {
                     boardButtons[1][2].setText("X");
                     boardButtons[1][2].setEnabled(false);
                     boardButtons[1][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                    HWIN2++;
+                    VWIN3++;
+                    ClickCount++;
+                    winCheck();
 
                     LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
-                statusTextArea.setText("                                                   Player O's turn");
+                    statusTextArea.setText("                                                   Player O's turn");
                     userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
         }
     }    
@@ -725,6 +710,11 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[2][0].setText("X");
                 boardButtons[2][0].setEnabled(false);
                 boardButtons[2][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN3++;
+                VWIN1++;
+                DWIN2++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 1");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -737,6 +727,10 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[2][1].setText("X");
                 boardButtons[2][1].setEnabled(false);
                 boardButtons[2][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN3++;
+                VWIN2++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 2");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -749,6 +743,11 @@ public synchronized void receiveMsg(String move) {
                 boardButtons[2][2].setText("O");
                 boardButtons[2][2].setEnabled(false);
                 boardButtons[2][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+                HWIN3++;
+                VWIN3++;
+                DWIN1++;
+                ClickCount++;
+                winCheck();
 
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 3");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -756,6 +755,67 @@ public synchronized void receiveMsg(String move) {
                 userSymbolTextArea.setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
         }
     }
+
+        if (move.startsWith("O_WON")){
+            JOptionPane.showMessageDialog(GameGUI.this, "Player O HAS WON");
+            resetBoardPanel();
+            enableAllButtons();            
+            //JOptionPane.showMessageDialog(GameGUI.this, "Player Has Won");
+            LastMOVE.setText("a new game is\n beginning, start a new \ngame using new game button ");
+            LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+            HWIN1 = 0;
+            HWIN2 = 0;
+            HWIN3 = 0;
+
+            VWIN1 = 0;
+            VWIN2 = 0;
+            VWIN3 = 0;
+
+            DWIN1 = 0;
+            DWIN2 = 0;
+            ClickCount = 0;
+        }
+
+        if (move.startsWith("X_WON")){
+            JOptionPane.showMessageDialog(GameGUI.this, "Player X HAS WON");
+            resetBoardPanel();
+            enableAllButtons();            
+
+            LastMOVE.setText("a new game is\n beginning, start a new \ngame using new game button ");
+            LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+            HWIN1 = 0;
+            HWIN2 = 0;
+            HWIN3 = 0;
+
+            VWIN1 = 0;
+            VWIN2 = 0;
+            VWIN3 = 0;
+
+            DWIN1 = 0;
+            DWIN2 = 0;
+            ClickCount = 0;
+
+
+        }
+        if (move.startsWith("D_R_A_W")) {
+            JOptionPane.showMessageDialog(GameGUI.this, "YALL BOTH TOOK AN L, DRAW");
+            resetBoardPanel();
+            enableAllButtons();            
+            //JOptionPane.showMessageDialog(GameGUI.this, "Player Has Won");
+            LastMOVE.setText("a new game is\n beginning, start a new \ngame using new game button ");
+            LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
+            HWIN1 = 0;
+            HWIN2 = 0;
+            HWIN3 = 0;
+
+            VWIN1 = 0;
+            VWIN2 = 0;
+            VWIN3 = 0;
+
+            DWIN1 = 0;
+            DWIN2 = 0;
+            ClickCount = 0;
+        }    
 
 
         //if the server tell you that the opponent quit the game
@@ -767,18 +827,14 @@ public synchronized void receiveMsg(String move) {
             LastMOVE.setText("you quit the game,\n"+ "please disconnect\n"+" from server \n"+"and reconnect to\n"+ "play another game!");
             LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
             gameGUI.disconnect();
-            
-
         }
         // if the server tell you that the opponent start a new game
         if(move.startsWith("New_Game")){
             resetBoardPanel();
             enableAllButtons();            
             JOptionPane.showMessageDialog(GameGUI.this, "Player Has Started A New Game");
-            LastMOVE.setText("a new game is\n"+" beginning player X\n"+" gets the first move!");
+            LastMOVE.setText("a new game is\n"+" beginning ");
             LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
-
- 
         }
     }  
     catch (NumberFormatException e) {
@@ -786,38 +842,50 @@ public synchronized void receiveMsg(String move) {
         e.printStackTrace(); // Log the exception or handle it appropriately
     }
 }
+
+private synchronized void winCheck(){
     
-private void updateButtonOnGUI(int row, int col) {
-    if (boardButtons[row][col].getText().isEmpty()) {
-        boardButtons[row][col].setText(String.valueOf(buttonClicked));
+    if(HWIN1 == 3){
+        sendMove("HWIN1 " + opponent);
+    }
+    else if(HWIN2 == 3){
+        sendMove("HWIN2 " + opponent);  
 
-        boardButtons[row][col].setEnabled(false);
+    }
+    else if(HWIN3 == 3){
+        sendMove("HWIN3 " + opponent); 
+ 
+    }
+    else if(VWIN1 == 3){
+        sendMove("VWIN1 " + opponent);
 
-        // Switch to the new player
-        buttonClicked = (buttonClicked.equals("X")) ? "O" : "X";
+    }
+    else if(VWIN2 == 3){
+        sendMove("VWIN2 " + opponent);
+
+    }
+    else if(VWIN3 == 3){
+        sendMove("VWIN3 " + opponent);
+
+    }
+    else if(DWIN1 == 3){
+        sendMove("DWIN1 " + opponent);
+
+    }
+    else if(DWIN2 == 3){
+        sendMove("DWIN2 " + opponent);
+
+    }
+    else{
+        if(ClickCount == 9){
+        }
     }
 }
 
-private String getCurrentPlayerSymbol() {
-    // Implement logic to determine if it's Player X or Player O's turn
-    // For example, you can use a boolean flag or keep track of the current turn in the TicTacToeBoard class
-    return "X"; // Placeholder, replace with your logic
-}
 
     public synchronized void sendMove(String msg){
         if(this.gameGUI != null && msg != null){
-            System.out.println("send move in server from gui move mdae by player: " + msg);
             gameGUI.writeMessage(msg);
-        }
-    }
-
-    public synchronized void receiveMoveFromServer() {
-        String move = server.dequeueMove();
-        if (move != null) {
-            // Update the GUI with the received move
-            System.out.println("Received player 1 move from server and now updating other players GUI: " + move);
-            // ... update GUI code ...
-            // delete this receiveMoveFromServer.length-1;
         }
     }
  
@@ -847,16 +915,6 @@ private void enableAllButtons(){
     }
 }
 
-private void disableAllButtons() {
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            boardButtons[i][j].setEnabled(false);
-        }
-    }
-}
-
-
-//ALL DONE
 //store button action after you click the button
 private class QuitGameButtonClickListener implements ActionListener {
  
@@ -866,26 +924,6 @@ private class QuitGameButtonClickListener implements ActionListener {
         sendMove("Recieve_Quit_Game");
        
     }
-}
-     // Method to handle receiving updated board state from the server
-    public void updateBoardState(String[][] board)
-    {
-        // Update the game board buttons based on the received board state
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                boardButtons[i][j].setText(ClientSymbol);
-            }
-        }
- 
-        // Enable buttons that were previously disabled due to user clicks
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            boardButtons[i][j].setEnabled(true);
-        }
-    }
-       
 }
  
 //ALLDONE

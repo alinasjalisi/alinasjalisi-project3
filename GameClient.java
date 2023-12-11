@@ -5,11 +5,7 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
- 
-//client side cod
-//allow gameserver to call class
-//magage the local Gui
-//sed and recieve udate from the server
+
 public class GameClient{
     //used to read incoming move from person you are playing against
     private BufferedReader read;
@@ -27,19 +23,12 @@ public class GameClient{
     private GameGUI gameGUI;
     //store server properties
     public GameServer server;
- 
-    /*public void setServer(GameServer server) {
-        this.server = server;
-    }*/
- 
+
     //allow t initialize variable from the given variable store in the Gui
     public GameClient(String serverAddress, int serverport, GameGUI gameGUI){
         this.serverAddress = serverAddress;
         this.serverport = serverport;
-        this.gameGUI = gameGUI;
- 
-       
-       
+        this.gameGUI = gameGUI;  
     }
  
     //inner class repesenting the thread for reading move
@@ -51,12 +40,14 @@ public class GameClient{
             try {
                 // Initialize resources (send, receive, etc.)
                 while (isConnected()) {
-                   
- 
                     //create variable that store incoming message being passed in the server
                     String msg = read.readLine();
                     //use read for assigning synbil
- 
+
+                    if (msg.equals("D_R_A_W")) {
+                        gameGUI.receiveMsg(msg);
+                    }
+
                     if (msg.equals("SYMBOL O")) {
                         gameGUI.receiveMsg(msg);
                     }
@@ -133,12 +124,15 @@ public class GameClient{
                     if (msg.equals("9_X")) {
                         gameGUI.receiveMsg(msg);
                     }
-
                     if(msg.equals("TWO_PLAYER_CONNECTED")){
-                        System.out.println("GOTHERE");
                         gameGUI.receiveMsg(msg);
                     }
-
+                    if(msg.equals("O_WON")){
+                        gameGUI.receiveMsg(msg);
+                    }
+                    if(msg.equals("X_WON")){
+                        gameGUI.receiveMsg(msg);
+                    }
                     //if msg == a click button that want to start a quit button, communite that you are starting new game
                     if (msg.equals("Quit_Game")) {
                         gameGUI.receiveMsg(msg);
@@ -151,11 +145,12 @@ public class GameClient{
                         //not correctly connected to the server
                         check = false;
                         disconnect();
-                    }else{
+                    }
+                    else{
                         processMessage(msg);
                     }
-                    }
-                } catch (IOException e) {
+                }
+            } catch (IOException e) {
                     //handle disconnect error
                     if (isConnected()) {
                         //call the disconnect to disconnect
@@ -169,37 +164,19 @@ public class GameClient{
  
     // Assigns a random symbol to the player once connected, either X or O
  
-    //HARD CODE FIRST PERSON TO CONNECT
-    //having a hardtime getting the playcount from the server
-   
     public void processMessage(String msg) {
-        // Process the received message as needed
-        // Example: Update the GUI, handle different message types, etc.
         gameGUI.receiveMsg(msg);
-        //System.out.println("Recieve from geu " + msg);
-        //send the message to server
-        //server.enqueueMove(msg); //NOTWORKINGIDKY
- 
-       
+
     }
 
  
     public void writeMessage(String message) {
         if (isConnected()) {
-            //add the message
             write.println(message);
-            // System.out.println("recieved from server " + message);
-            //call a method in game server to be able to recieve the message
-            //server.enqueueMove(message);
-            //remove message
             write.flush();
         }
     }
    
-    //vommunicate with the server
-    //public void ClientNetworking
-    //add reading thread and fix boolean too
-    //check if player is connected to server and used in GameGui
     public boolean connectToServer() {
         try {
             System.out.println("Connecting to server at " + serverAddress + ":" + serverport);
@@ -247,10 +224,8 @@ public class GameClient{
     }  
     //store if player is connected to server
     public boolean isConnected(){
-        //System.out.println(" check is connected in gameClient");
         return check;
     }
- 
     //fucntion to perform diconnection
     public void disconnect() {
         try {

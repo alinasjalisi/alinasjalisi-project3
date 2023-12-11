@@ -60,6 +60,55 @@ public class GameServer implements Runnable {
                 while (true) {
                     String move = receive.readLine();
 
+                    if(move.equals("HWIN1 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("HWIN2 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("HWIN3 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("VWIN1 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("VWIN2 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("VWIN3 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("DWIN1 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("DWIN2 O")){
+                        move = "O_WON";
+                    }
+                    if(move.equals("HWIN1 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("HWIN2 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("HWIN3 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("VWIN1 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("VWIN2 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("VWIN3 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("DWIN1 X")){
+                        move = "X_WON";
+                    }
+                    if(move.equals("DWIN2 X")){
+                        move = "X_WON";
+                    }
+
                     //FOR O CELLS
                     if(move.equals("1,O")){
                         move ="1_O";
@@ -118,7 +167,6 @@ public class GameServer implements Runnable {
                         move ="9_X";
                     }
 
-
                     if(move.equals("Receive_New_Game")){
                         move = "New_Game";
 
@@ -170,7 +218,6 @@ public class GameServer implements Runnable {
         }
  
         public synchronized void recieveMove(String move){
- 
             enqueueMove(move);
             dequeueAll();
  
@@ -206,7 +253,6 @@ public class GameServer implements Runnable {
  
     //take in all teh message
     public synchronized void enqueueMove(String move) {
-        System.out.println("Recieved move from gui...we sent player 1 move from their gui to server" + move);
             upcomingMove.add(move);
             dequeueAll();
     }
@@ -219,9 +265,6 @@ public class GameServer implements Runnable {
             for(String d : upcomingMove) {
                 upcomingMove.remove(move);
             }
-
-        System.out.println("we got player 1 move from their gui in our gui thru server" + move);
-
             upcomingMove.get(0);
             
     }
@@ -247,8 +290,6 @@ public class GameServer implements Runnable {
         while (true) {
             try {
                 Socket player = serverSock.accept();
-
-                System.out.println("count " + playerCount);
                 if(playerCount == 0 || playerCount == 1){
                 GameClient client = new GameClient(player);
                 client.allPlay();
