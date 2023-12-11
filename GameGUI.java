@@ -429,6 +429,7 @@ private class connectAction implements ActionListener {
                     // Check if the clicked button is empty
                     if (boardButtons[clickedRow][clickedCol].getText().isEmpty()) {
                         boardButtons[clickedRow][clickedCol].setText(String.valueOf(ClientSymbol));
+                        boardButtons[clickedRow][clickedCol].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
                         boardButtons[clickedRow][clickedCol].setEnabled(false);
 
                         /*if (board.makeMove(getClickedRow(), getClickedCol())) {
@@ -510,8 +511,6 @@ public synchronized void receiveMsg(String move) {
         if(move.startsWith("TWO_PLAYER_CONNECTED")){
             enableAllButtons();
 
-            //sendMove("TWO_PLAYER_CONNECTED");
-
         }
 
         /*if(move.startsWith("NOT_TWO_PLAYER_CONNECTED")){
@@ -523,6 +522,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[0][0].getText().isEmpty()) {
                     boardButtons[0][0].setText("O");
                     boardButtons[0][0].setEnabled(false);
+                    boardButtons[0][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     ClickCount++;
                     LastMOVE.setText("Player O made\n"+ "a move to \n" + "row 1 col 1");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -535,6 +536,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[0][1].getText().isEmpty()) {
                     boardButtons[0][1].setText("O");
                     boardButtons[0][1].setEnabled(false);
+                    boardButtons[0][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player O made \n"+ "a move to \n"+ "row 1 col 2");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
@@ -548,6 +551,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[0][2].getText().isEmpty()) {
                     boardButtons[0][2].setText("O");
                     boardButtons[0][2].setEnabled(false);
+                    boardButtons[0][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player O made\n" + "a move to\n"+ "row 1 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
@@ -560,6 +565,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][0].getText().isEmpty()) {
                     boardButtons[1][0].setText("O");
                     boardButtons[1][0].setEnabled(false);
+                    boardButtons[1][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 1");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
@@ -572,6 +579,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][1].getText().isEmpty()) {
                     boardButtons[1][1].setText("O");
                     boardButtons[1][1].setEnabled(false);
+                    boardButtons[1][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 2");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
@@ -584,6 +593,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][2].getText().isEmpty()) {
                     boardButtons[1][2].setText("O");
                     boardButtons[1][2].setEnabled(false);
+                    boardButtons[1][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 2 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player X's turn");
@@ -596,6 +607,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][0].getText().isEmpty()) {
                 boardButtons[2][0].setText("O");
                 boardButtons[2][0].setEnabled(false);
+                boardButtons[2][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 1");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player X's turn");
@@ -608,6 +621,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][1].getText().isEmpty()) {
                 boardButtons[2][1].setText("O");
                 boardButtons[2][1].setEnabled(false);
+                boardButtons[2][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 2");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player X's turn");
@@ -620,6 +635,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][2].getText().isEmpty()) {
                 boardButtons[2][2].setText("O");
                 boardButtons[2][2].setEnabled(false);
+                boardButtons[2][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player O made\n"+ " a move to\n"+ " row 3 col 3");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player X's turn");
@@ -634,6 +651,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[0][0].getText().isEmpty()) {
                 boardButtons[0][0].setText("X");
                 boardButtons[0][0].setEnabled(false);
+                boardButtons[0][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 1");
                 System.out.println("sdfghjk");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
@@ -645,6 +664,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[0][1].getText().isEmpty()) {
                 boardButtons[0][1].setText("X");
                 boardButtons[0][1].setEnabled(false);
+                boardButtons[0][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 2");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -655,6 +676,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[0][2].getText().isEmpty()) {
                     boardButtons[0][2].setText("X");
                     boardButtons[0][2].setEnabled(false);
+                    boardButtons[0][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 1 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                     statusTextArea.setText("                                                   Player O's turn");
@@ -665,6 +688,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][0].getText().isEmpty()) {
                 boardButtons[1][0].setText("X");
                 boardButtons[1][0].setEnabled(false);
+                boardButtons[1][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 1");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -675,6 +700,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][1].getText().isEmpty()) {
                     boardButtons[1][1].setText("X");
                     boardButtons[1][1].setEnabled(false);
+                    boardButtons[1][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 2");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -685,6 +712,8 @@ public synchronized void receiveMsg(String move) {
                 if (boardButtons[1][2].getText().isEmpty()) {
                     boardButtons[1][2].setText("X");
                     boardButtons[1][2].setEnabled(false);
+                    boardButtons[1][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                     LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 2 col 3");
                     LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -695,6 +724,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][0].getText().isEmpty()) {
                 boardButtons[2][0].setText("X");
                 boardButtons[2][0].setEnabled(false);
+                boardButtons[2][0].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 1");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -705,6 +736,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][1].getText().isEmpty()) {
                 boardButtons[2][1].setText("X");
                 boardButtons[2][1].setEnabled(false);
+                boardButtons[2][1].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 2");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -715,6 +748,8 @@ public synchronized void receiveMsg(String move) {
             if (boardButtons[2][2].getText().isEmpty()) {
                 boardButtons[2][2].setText("O");
                 boardButtons[2][2].setEnabled(false);
+                boardButtons[2][2].setFont((new Font(Font.SERIF, Font.PLAIN, 100)));
+
                 LastMOVE.setText("Player X made\n"+ " a move to\n"+ " row 3 col 3");
                 LastMOVE.setFont(new Font(Font.SERIF, Font.PLAIN, 18));
                 statusTextArea.setText("                                                   Player O's turn");
@@ -804,8 +839,6 @@ private class NewGameButtonClickListener implements ActionListener{
  
 //allow for al the button that were previously disable for the to be able use
 private void enableAllButtons(){
-
-    
     // Enable buttons that were previously disabled due to user clicks
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
