@@ -73,7 +73,6 @@ public class GameGUI extends JFrame
     //used to connect GameClient
     private GameClient gameGUI;
 
-    private tictactoeboard board; 
 
     private int HWIN1;
     private int HWIN2;
@@ -94,14 +93,12 @@ public class GameGUI extends JFrame
         //set the title of the windo
         super("TicTacToe");
         //used to connect with the server methods
-        //board = new tictactoeboard();
         startGameGUI();
     }
  
     //used for initializing and orgarning the physical stuff
     private void startGameGUI()
     {
-        board = new tictactoeboard();
         
         setTitle("TicTacToe(connected)");
         setSize(900, 600);
